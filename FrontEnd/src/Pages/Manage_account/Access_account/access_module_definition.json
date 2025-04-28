@@ -1,0 +1,79 @@
+{
+    "log_in":[
+        {
+            "tag": "label",
+            "text": "inserisci email"
+        },
+        {
+            "tag":"input",
+            "name":"email",
+            "type":"email"
+        },
+        {
+            "tag":"label",
+            "text":"inserisci password"
+        },
+        {
+            "tag":"input",
+            "name":"password",
+            "type":"password"
+        }
+    ],
+
+    "sign_up": 
+        [
+            {
+                "tag": "label",
+                "text": "inserisci email"
+            },
+            {
+                "tag":"input",
+                "name":"email",
+                "type":"email"
+            },
+            {
+                "tag":"label",
+                "text":"Inserisci l'username"
+            },
+            {
+                "tag":"input",
+                "name":"username",
+                "type":"text"
+            },
+            {
+                "tag":"label",
+                "text":"inserisci password"
+            },
+            {
+                "tag":"input",
+                "name":"password",
+                "type":"password"
+            },
+
+            {
+                "tag": "label",
+                "text": "inserisci Scuola"
+            },
+            {
+                "tag":"select",
+                "name":"scuola"
+            },
+            {
+                "tag": "label",
+                "text": "inserisci Indirizzo"
+            },
+            {
+                "tag":"select",
+                "name":"indirizzo"
+            },
+            {
+                "tag": "label",
+                "text": "inserisci Classe"
+            },
+            {
+                "tag":"select",
+                "name":"classe"
+            }
+            
+        ]
+}

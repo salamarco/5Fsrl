@@ -1,0 +1,19 @@
+{
+    "data":[
+        {
+            "nome_scuola":"Liceo",
+            "indirizzi":[
+                {"nome":"Sportivo"},
+                {"nome":"Scientifico tradizionale"},
+                {"nome":"Scientifico scienze applicate"},
+                {"nome":"Artistico"},
+                {"nome":"Linguistico"},
+                {"nome":"Classico"},
+                {"nome":"Scienze umane"},
+                {"nome":"Musicale e coreutico"}
+            ],
+            "anni_possibili": ["Prima","Seconda","Terza","Quarta","Quinta"]
+        }
+
+    ]
+}

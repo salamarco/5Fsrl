@@ -1,0 +1,27 @@
+{
+    "data": [
+        {
+            "title": "Statistics",
+            "sub_text": "nome.app fornisce numerose e complete statistiche sulle tue attivita' e l'andamento della tuo percorso scolastico",
+            "styling": "qua va inserito il className per tailwind del componente"
+        },
+        
+        {
+            "title": "Calendar",
+            "sub_text": "nome.app fornisce visualizzazione e gestione del calendario delle attivita' in manier chiara e veloce",
+            "styling": "qua va inserito il className per tailwind del componente"
+
+        },
+        {
+            "title": "School",
+            "sub_text": "nome.app permette la gestione e l'organizzazione delle tue attivita' scolastiche, adattantosi alle materie della tua scuola e al tuo percorso di studi",
+            "styling": "qua va inserito il className per tailwind del componente"
+
+        },
+        {
+            "title": "Personal",
+            "sub_text": "nome.app permette la gestione e l'organizzazione delle tue attivita fuori dalla scuola, permettendoti un miglior controllo del tuo tempo e dei tuoi impegni",
+            "styling": "qua va inserito il className per tailwind del componente"
+        }
+    ]
+}
