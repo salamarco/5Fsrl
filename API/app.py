@@ -65,13 +65,17 @@ def userLogin():
         conn = get_db_connection()
         cursor = conn.cursor()
 
+        query = """
+        SELECT *
+        FROM utenti
+        WHERE username = %s
+        AND password = %s
+        """
 
-        # DA FINIRE LA QUERY
-        query = ''
         cursor.execute(query)
-        conn.commit()
+        result = cursor.fetchall()
 
-        return jsonify({'message': 'Login effettuato con successo'}), 201
+        return jsonify(result), 200
 
     except Error as e:
         return jsonify({'error': str(e)}), 500
