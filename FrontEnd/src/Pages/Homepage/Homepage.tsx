@@ -4,51 +4,45 @@ import Interactive_box from '../../Components/Interactive_box/Interactive_box.ts
 import { Link } from 'react-router';
 import Data_boxes from './text_for_box.json'
 import './Homepage.css'
-import logo from '../../assets/logo5F.png'
 import Decorations  from './Decorations.tsx';
 
 export const Homepage = () => {
   return (
     <div className='homepage'>
         <div className='initial-section'>
-        <div className='bg-decorations'><Decorations /></div>
-        
-        <div className='logo5F'>
-            <img src={logo} alt="logo" />
-        </div>
-
-
+            
+            <div className='bg-decoration'><Decorations /></div>
+            
             <div className='welcome'>
-                <Animated_text
-                    html_element='h2'
-                    className=''
-                    text='Benvenuto in Nome.app'
-                />
-            </div>
-            <div className='sub-text'>
-                <p>
-                    "Nome.app" Ti aiuta blablabla
-                </p>
-            </div>
-            <div className='access-button'>
-                <Link to='/AccessPage'>
-                    <button>
-                        Accedi/Registrati per usare nome.app
-                    </button>
-                </Link>
-            </div>
-        </div>
-        <div className='functionality-section'>
-            <div className='Title'> <h3> Functionality </h3></div>
-            <div className='main-section-func'>
-                {Data_boxes.data.map((data,dataIndex) => (
-                    <Interactive_box 
-                    key={dataIndex}
-                    title={data.title}
-                    sub_text={data.sub_text}
-                    className = {data.styling}
+                    <Animated_text
+                        html_element='h2'
+                        className=''
+                        text='Benvenuto in Nome.app'
                     />
-                ))}
+                </div>
+                <div className='sub-text'>
+                    <p>
+                        "Nome.app" Ti aiuta blablabla
+                    </p>
+                </div>
+                <div className='access-button'>
+                    <Link to='/AccessPage'>
+                        <button>
+                            Accedi/Registrati per usare nome.app
+                        </button>
+                    </Link>
+                </div>
+            <div className='functionality-section'>
+                <div className='Title'> <h3> Functionality </h3></div>
+                <div className='main-section-func'>
+                    {Data_boxes.data.map((data,dataIndex) => (
+                        <Interactive_box 
+                        key={dataIndex}
+                        title={data.title}
+                        sub_text={data.sub_text}
+                        className = {data.styling}
+                        />
+                    ))}
             </div>
             <div className='subtext-functionality'> 
                 <p>Migliora la tua organizzazione degli impegni per goderti un migliore e più lungo tempo libero</p>
@@ -60,10 +54,11 @@ export const Homepage = () => {
                 About us ancora da definire in struttura e componenti e anche da implementare e stilizzare
 
             </div>
-            </div>
+        </div>
         <div className='footer-section'>
             <Footer/>
         </div>
+    </div>
     </div>
   )
 }

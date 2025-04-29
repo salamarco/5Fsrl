@@ -1,5 +1,6 @@
 import { JSX } from 'react';
 import {motion} from 'motion/react'
+import './Typining_text.css';
 
 /*
 l'interfaccia prende:
@@ -30,6 +31,7 @@ const defaultAnimations = {
 
 export const Typing_text: React.FC<Typing_text_props> = ({html_element: Wrapper = 'html',className,text}) => {
   return (
+    
     <div className='main-section'>
       <motion.span  variants={{
         visible: { transition: { staggerChildren: 0.15 } },

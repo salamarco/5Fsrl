@@ -1,4 +1,6 @@
 import { useEffect, useRef } from 'react';
+import logo from '../../assets/logo5F.png'
+import './Homepage.css'
 
 const colors = ['#0a1f44', '#236ab9', '#b3d9ff'];
 const icons = ['📅', '🗓️', '📋'];
@@ -14,9 +16,9 @@ export default function Decorations() {
       const icon = document.createElement('div');
       icon.className = 'icon';
       icon.innerText = icons[Math.floor(Math.random() * icons.length)];
-      icon.style.left = Math.random() * 60 + 'px';
+      icon.style.left = Math.random() * 200 + 'px';
       icon.style.color = colors[Math.floor(Math.random() * colors.length)];
-      icon.style.animationDuration = `${4 + Math.random() * 3}s`;
+      icon.style.animationDuration = `${5 + Math.random() * 3}s`;
 
       container.appendChild(icon);
 
@@ -35,8 +37,11 @@ export default function Decorations() {
 
   return (
     <>
-      <div ref={leftRef} className="left-decor" />
-      <div ref={rightRef} className="right-decor" />
+      <div ref={leftRef} className=" decor left-decor" />
+      <div className='logo5F'>
+        <img src={logo} alt="logo" className='logo' />
+      </div> 
+      <div ref={rightRef} className="decor right-decor"/> 
     </>
   );
 }

@@ -1,10 +1,10 @@
-
 .main-section-func{
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
     justify-content:space-around;
 }
+
 .logo5F{
     display: flex;
     margin: 0 auto;
@@ -25,6 +25,20 @@
     }
   }
 
+  .logo{
+    animation: restrict 2s ease-out forwards;
+  }
+
+  @keyframes restrict {
+    from {
+      opacity: 1;
+    }
+    to {
+      transform: scale(0.7);
+      opacity: 1;
+    }
+  }
+
 
   .decor {  
     position: fixed;
@@ -32,15 +46,16 @@
     width: 80px;
     height: 100%;
     pointer-events: none;
-    z-index: 999;
+
   }
   
-  #left-decor {
+  .left-decor {
+
     left: 0;
   }
   
-  #right-decor {
-    right: 0;
+  .right-decor {
+    right: 250px;
   }
   
   .icon {
@@ -48,17 +63,28 @@
     font-size: 30px;
     opacity: 0.8;
     animation: fall linear forwards;
+    border-radius: 20%;
+    box-shadow:
+    0 0 4px rgba(0, 123, 255, 0.6),
+    0 0 10px rgba(0, 123, 255, 0.5),
+    0 0 20px rgba(0, 123, 255, 0.3);
+
   }
   
+
+
   @keyframes fall {
     0% {
-      transform: translateY(-50px) rotate(0deg);
+      transform: translateY(-200px) rotate(0deg);
     }
     100% {
       transform: translateY(110vh) rotate(360deg);
+      opacity: 0;
     }
   }
 
-  .bg-decorations{
-    background-color: rgb(86, 170, 226) ;
+
+  .welcome{
+    text-align: center;
+    justify-content: center;
   }
