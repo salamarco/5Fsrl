@@ -4,11 +4,20 @@ import Interactive_box from '../../Components/Interactive_box/Interactive_box.ts
 import { Link } from 'react-router';
 import Data_boxes from './text_for_box.json'
 import './Homepage.css'
+import logo from '../../assets/logo5F.png'
+import Decorations  from './Decorations.tsx';
 
 export const Homepage = () => {
   return (
     <div className='homepage'>
         <div className='initial-section'>
+        <div className='bg-decorations'><Decorations /></div>
+        
+        <div className='logo5F'>
+            <img src={logo} alt="logo" />
+        </div>
+
+
             <div className='welcome'>
                 <Animated_text
                     html_element='h2'
@@ -17,7 +26,9 @@ export const Homepage = () => {
                 />
             </div>
             <div className='sub-text'>
-                testo sotto la scritta welcome
+                <p>
+                    "Nome.app" Ti aiuta blablabla
+                </p>
             </div>
             <div className='access-button'>
                 <Link to='/AccessPage'>

@@ -1,6 +1,64 @@
+
 .main-section-func{
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
-    justify-content: space-between;
+    justify-content:space-around;
 }
+.logo5F{
+    display: flex;
+    margin: 0 auto;
+    width: 550px;
+    height: 550px;
+    margin-top:10%;
+    animation: riseUp 1s ease-out 1.5s forwards;
+}
+
+@keyframes riseUp {
+    from {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    to {
+      transform: translateY(-150px);
+      opacity: 1;
+    }
+  }
+
+
+  .decor {  
+    position: fixed;
+    top: 0;
+    width: 80px;
+    height: 100%;
+    pointer-events: none;
+    z-index: 999;
+  }
+  
+  #left-decor {
+    left: 0;
+  }
+  
+  #right-decor {
+    right: 0;
+  }
+  
+  .icon {
+    position: absolute;
+    font-size: 30px;
+    opacity: 0.8;
+    animation: fall linear forwards;
+  }
+  
+  @keyframes fall {
+    0% {
+      transform: translateY(-50px) rotate(0deg);
+    }
+    100% {
+      transform: translateY(110vh) rotate(360deg);
+    }
+  }
+
+  .bg-decorations{
+    background-color: rgb(86, 170, 226) ;
+  }
