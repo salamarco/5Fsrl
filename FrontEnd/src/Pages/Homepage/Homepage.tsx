@@ -11,14 +11,15 @@ export const Homepage = () => {
     <div className='homepage'>
         <div className='initial-section'>
             
-            <div className='bg-decoration'><Decorations /></div>
+            <div className='bg-decoration'><Decorations />
             
-            <div className='welcome'>
+                <div className='welcome'>
                     <Animated_text
                         html_element='h2'
                         className=''
                         text='Benvenuto in Nome.app'
                     />
+                </div>
                 </div>
                 <div className='sub-text'>
                     <p>

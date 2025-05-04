@@ -1,8 +1,8 @@
+
 .main-section-func{
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
-    justify-content:space-around;
 }
 
 .logo5F{
@@ -59,32 +59,51 @@
   }
   
   .icon {
-    position: absolute;
+    position:absolute;
     font-size: 30px;
     opacity: 0.8;
-    animation: fall linear forwards;
+    animation: fall 3s linear forwards, trail 3s linear forwards; /* Durata sincronizzata */
     border-radius: 20%;
-    box-shadow:
-    0 0 4px rgba(0, 123, 255, 0.6),
-    0 0 10px rgba(0, 123, 255, 0.5),
-    0 0 20px rgba(0, 123, 255, 0.3);
+    box-shadow: 0 0 20px 10px rgba(0, 0, 255, 0.5); /* Scia iniziale */
+}
 
-  }
-  
-
-
-  @keyframes fall {
+@keyframes fall {
     0% {
-      transform: translateY(-200px) rotate(0deg);
+        transform: translateY(-200px) rotate(0deg);
     }
     100% {
-      transform: translateY(110vh) rotate(360deg);
-      opacity: 0;
+        transform: translateY(110vh) rotate(360deg);
+        opacity: 0;
     }
-  }
+}
+
+@keyframes trail {
+    0% {
+        box-shadow: 0 0 20px 5px rgba(0, 0, 255, 0.5); /* Scia visibile */
+    }
+    50% {
+        box-shadow: 0 0 15px 3px rgba(0, 0, 255, 0.3); /* Scia attenuata */
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(0, 0, 255, 0); /* Scia scompare */
+    }
+}
 
 
   .welcome{
     text-align: center;
-    justify-content: center;
+    justify-content: center;  
+    margin-top: -60px;
+    animation: up 1s ease-out 1.5s forwards;
+  }
+
+  @keyframes up {
+    from {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    to {
+      transform: translateY(-150px);
+      opacity: 1;
+    }
   }
