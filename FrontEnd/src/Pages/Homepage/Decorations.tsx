@@ -3,7 +3,7 @@ import logo from '../../assets/logo5F.png'
 import './Homepage.css'
 
 const colors = ['#0a1f44', '#236ab9', '#b3d9ff'];
-const icons = ['📅', '🗓️', '📋'];
+const icons = ['🗓️', '🗓️', '📋', '⏰'];
 
 export default function Decorations() {
   const leftRef = useRef<HTMLDivElement>(null);
@@ -30,7 +30,7 @@ export default function Decorations() {
     const interval = setInterval(() => {
       createIcon(leftRef.current);
       createIcon(rightRef.current);
-    }, 300);
+    }, 400);
 
     return () => clearInterval(interval);
   }, []);

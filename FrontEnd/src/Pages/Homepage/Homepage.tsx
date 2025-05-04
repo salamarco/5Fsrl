@@ -17,7 +17,7 @@ export const Homepage = () => {
                     <Animated_text
                         html_element='h2'
                         className=''
-                        text='Benvenuto in Nome.app'
+                        text= 'Benvenuto in 5ꟻ srl !'
                     />
                 </div>
                 </div>
