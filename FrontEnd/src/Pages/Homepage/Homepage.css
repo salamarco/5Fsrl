@@ -8,8 +8,8 @@
 .logo5F{
     display: flex;
     margin: 0 auto;
-    width: 550px;
-    height: 550px;
+    width: 500px;
+    height: 500px;
     margin-top:10%;
     animation: riseUp 1s ease-out 1.5s forwards;
 }
@@ -97,7 +97,7 @@
   padding: 20px;
   text-align: center;
   justify-content: center;  
-  margin-top: -60px;
+  margin-top: -70px;
   animation: up 1s ease-out 1.5s forwards, animate 2s ease-out 2s forwards;
   font-family: "Montserrat", sans-serif;
   font-weight: 400;
@@ -173,3 +173,55 @@
       opacity: 1;
     }
   }
+  .button-access{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+    width: 14%;
+    height: 60px;
+    padding: 10px;
+    text-align: center;
+    justify-content: center;  
+    margin-top: -90px;
+    font-family: "Montserrat", sans-serif;
+    font-weight: 500;
+    text-decoration: none;
+    background: linear-gradient(90deg, #b7d9f6, #1e90ff);
+    background-size: 200% 200%; 
+    animation: gradientShift 3s ease infinite, goUp 2s ease-out 1s forwards;
+    border-radius: 50px;
+    position: relative;
+    opacity: 0;
+    }
+  
+    @keyframes goUp{
+      from{
+        transform: translateY(500px);
+        opacity: 0;
+      }
+      to{
+        transform: translateY(0px);
+        opacity: 1;
+      }
+    }
+  @keyframes gradientShift {
+      0% {
+          background-position: 0% 50%;
+      }
+      50% {
+          background-position: 100% 50%;
+      }
+      100% {
+          background-position: 0% 50%;
+      }
+  }
+
+  .button-access:hover {
+      background: linear-gradient(90deg, #1e90ff, #1533e1);
+      box-shadow: 0 0 20px rgba(30, 144, 255, 0.5), 0 0 40px rgba(30, 144, 255, 0.5), 0 0 60px rgba(30, 144, 255, 0.5);
+      transform: scale(1.05);
+      transition: all 0.3s ease;
+    }
+  
+    

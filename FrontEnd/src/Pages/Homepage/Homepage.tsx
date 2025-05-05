@@ -5,10 +5,15 @@ import { Link } from 'react-router';
 import Data_boxes from './text_for_box.json'
 import './Homepage.css'
 import Decorations  from './Decorations.tsx';
+import Header from '../../Components/Header/Header.tsx';
 
 export const Homepage = () => {
   return (
+    
     <div className='homepage'>
+        <div className='header-section'>
+            <Header/>
+        </div>
         <div className='initial-section'>
             
             <div className='bg-decoration'><Decorations />
@@ -17,22 +22,19 @@ export const Homepage = () => {
                     <Animated_text
                         html_element='h2'
                         className=''
-                        text= 'Benvenuto in 5ꟻ srl !'
+                        text= 'Benvenuto in 5F srl !'
                     />
                 </div>
                 </div>
-                <div className='sub-text'>
-                    <p>
-                        "Nome.app" Ti aiuta blablabla
-                    </p>
-                </div>
                 <div className='access-button'>
                     <Link to='/AccessPage'>
-                        <button>
-                            Accedi/Registrati per usare nome.app
+                        <button className='button-access'>
+                            Start Now
                         </button>
                     </Link>
                 </div>
+
+                
             <div className='functionality-section'>
                 <div className='Title'> <h3> Functionality </h3></div>
                 <div className='main-section-func'>
