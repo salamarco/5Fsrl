@@ -33,6 +33,12 @@ def userRegistration():
         conn = get_db_connection()
         cursor = conn.cursor()
 
+        cursor.execute("SELECT COUNT(*) FROM utenti WHERE email = %s", (email))
+        email_exists = cursor.fetchone()[0]
+
+        if email_exists > 0:
+            return jsonify({'error': 'L\'email è già registrata'}), 400
+
         insert_query = """
         INSERT INTO utenti (username, email, password, nome, cognome)
         VALUES (%s, %s, %s, %s, %s)
@@ -54,6 +60,7 @@ def userRegistration():
 
 @app.route('/api/login', methods = ['POST'])
 def userLogin():
+
     data = request.json
     username = data.get('username')
     password = data.get('password')
@@ -63,15 +70,31 @@ def userLogin():
 
     try:
         conn = get_db_connection()
-        cursor = conn.cursor()
+        cursor = conn.cursor(dictionary=True)
 
+        query = """
+        SELECT username, email, nome, cognome, password_hash
+        FROM utenti
+        WHERE username = %s
+        """
 
-        # DA FINIRE LA QUERY
-        query = ''
-        cursor.execute(query)
-        conn.commit()
+        cursor.execute(query, (username))
+        result = cursor.fetchone()
 
-        return jsonify({'message': 'Login effettuato con successo'}), 201
+        if result is None:
+            return jsonify({'error': 'Utente non trovato'}), 404
+
+        stored_password = result['password_hash']
+        if stored_password == password:
+            user_data = {
+                'username': result['username'],
+                'email': result['email'],
+                'nome': result['nome'],
+                'cognome': result['cognome']
+            }
+            return jsonify({'message': 'Login effettuato con successo', 'user': user_data}), 200
+        else:
+            return jsonify({'error': 'Credenziali errate'}), 401
 
     except Error as e:
         return jsonify({'error': str(e)}), 500
@@ -81,6 +104,44 @@ def userLogin():
             cursor.close()
         if conn:
             conn.close()
+
+
+@app.route('/api/schools', methods = ['GET'])
+def getSchoolList():
+    
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    query = """
+        SELECT s.id_scuola, s.nome_scuola, s.numero_anni,
+               i.id_indirizzo, i.nome_indirizzo
+        FROM Scuole s
+        LEFT JOIN Indirizzi i
+        ON s.id_scuola = i.id_scuola
+        ORDER BY s.id_scuola;
+    """
+    cursor.execute(query)
+    rows = cursor.fetchall()
+
+    scuole_dict = {}
+    for row in rows:
+        id_scuola = row['id_scuola']
+        if id_scuola not in scuole_dict:
+            scuole_dict[id_scuola] = {
+                'id_scuola': id_scuola,
+                'nome_scuola': row['nome_scuola'],
+                'numero_anni': row['numero_anni'],
+                'indirizzi': []
+            }
+        if row['id_indirizzo']:
+            scuole_dict[id_scuola]['indirizzi'].append({
+                'id_indirizzo': row['id_indirizzo'],
+                'nome_indirizzo': row['nome_indirizzo']
+            })
+
+    cursor.close()
+    conn.close()
+    return jsonify(list(scuole_dict.values()))
 
 
 if __name__ == '__main__':

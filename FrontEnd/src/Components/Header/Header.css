@@ -1,0 +1,48 @@
+.nav-list{
+    display: flex;
+    align-items: center;
+    list-style: none;
+    margin: 0;
+    opacity: 0;
+    animation: goDown 3s ease-in-out 1s forwards;
+    margin-bottom: -10px;
+}
+
+@keyframes goDown{
+    0%{
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    100%{
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+.container{
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+
+}
+
+li{
+    margin: 0 30px;
+    font-size: 18px;
+    font-weight: 500;
+    color: #000;
+    cursor: pointer;
+}
+
+li:hover{
+    color: #007BFF;
+    transition: color 0.1s ease-in-out;
+}
+
+.sign-in{
+    color: white;
+    border-radius: 5px;
+    text-decoration: none;
+    width: 23px;
+}
