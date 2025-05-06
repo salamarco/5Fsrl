@@ -7,7 +7,7 @@
         {
             "tag":"input",
             "name":"email",
-            "type":"email"
+            "type":"text"
         },
         {
             "tag":"label",
@@ -16,12 +16,18 @@
         {
             "tag":"input",
             "name":"password",
-            "type":"password"
+            "type":"text"
+        },
+        {
+            "tag":"button",
+            "type":"submit",
+            "text_pre_submit":"Invia",
+            "text_post_submit":"Verifica dati..."
         }
     ],
 
-    "sign_up": 
-        [
+    "sign_up": {
+        "dati_personali": [
             {
                 "tag": "label",
                 "text": "inserisci email"
@@ -29,7 +35,7 @@
             {
                 "tag":"input",
                 "name":"email",
-                "type":"email"
+                "type":"text"
             },
             {
                 "tag":"label",
@@ -47,9 +53,16 @@
             {
                 "tag":"input",
                 "name":"password",
-                "type":"password"
+                "type":"text"
             },
-
+            {
+                "tag":"button",
+                "type":"submit",
+                "text_pre_submit": "Avanti",
+                "text_post_submit":"Verifica dati..."
+            }
+        ],
+        "dati_scuola": [
             {
                 "tag": "label",
                 "text": "inserisci Scuola"
@@ -73,7 +86,14 @@
             {
                 "tag":"select",
                 "name":"classe"
+            },
+            {
+                "tag":"button",
+                "type":"submit",
+                "text_pre_submit": "Registrati",
+                "text_post_submit":"Invio..."
             }
-            
         ]
+        
+    }
 }
