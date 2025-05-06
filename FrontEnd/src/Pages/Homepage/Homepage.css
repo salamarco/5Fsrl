@@ -94,7 +94,7 @@
   display: flex;
   margin: 0 auto;
   width: 100%;
-  padding: 20px;
+  padding: 15px;
   text-align: center;
   justify-content: center;  
   margin-top: -70px;
@@ -219,9 +219,14 @@
 
   .button-access:hover {
       background: linear-gradient(90deg, #1e90ff, #1533e1);
-      box-shadow: 0 0 20px rgba(30, 144, 255, 0.5), 0 0 40px rgba(30, 144, 255, 0.5), 0 0 60px rgba(30, 144, 255, 0.5);
+      box-shadow: 0 0 10px rgba(30, 144, 255, 0.5), 0 0 20px rgba(30, 144, 255, 0.5), 0 0 30px rgba(30, 144, 255, 0.5);
       transform: scale(1.05);
-      transition: all 0.3s ease;
+      transition: all 0.2s ease;
+      color: rgb(233, 233, 233);
     }
-  
-    
+
+  .button-access:active {
+      transform: scale(0.95);
+      box-shadow: 0 0 5px rgba(30, 144, 255, 0.5), 0 0 10px rgba(30, 144, 255, 0.5), 0 0 15px rgba(30, 144, 255, 0.5);
+      border: none;
+    }

@@ -1,0 +1,21 @@
+body {
+    background: linear-gradient(360deg, #f0f8ffd0, #e6f7ff, #d9f2ff);
+    background-size: 200% 200%;
+    animation: gradientShift 6s ease infinite;
+    margin: 0;
+    padding: 0;
+    background-repeat: no-repeat;
+}
+
+/* Gradient animation */
+@keyframes gradientShift {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}

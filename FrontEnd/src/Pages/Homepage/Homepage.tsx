@@ -12,7 +12,7 @@ export const Homepage = () => {
     
     <div className='homepage'>
         <div className='header-section'>
-            <Header/>
+            <Header animation={true}/>
         </div>
         <div className='initial-section'>
             
@@ -27,7 +27,7 @@ export const Homepage = () => {
                 </div>
                 </div>
                 <div className='access-button'>
-                    <Link to='/AccessPage'>
+                    <Link to='/AccessPage' style={{textDecoration:'none'}}>
                         <button className='button-access'>
                             Start Now
                         </button>

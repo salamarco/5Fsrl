@@ -6,7 +6,24 @@
     opacity: 0;
     animation: goDown 3s ease-in-out 1s forwards;
     margin-bottom: -10px;
-}
+    border: 1px solid #007BFF;
+    border-radius: 40px;
+    padding: 10px;
+    background-color: rgb(244, 249, 253);
+}   
+
+.nav-list-2{
+    display: flex;
+    align-items: center;
+    list-style: none;
+    margin: 0;
+    opacity: 1;
+    margin-bottom: -10px;
+    border: 1px solid #007BFF;
+    border-radius: 40px;
+    padding: 10px;
+    background-color: rgb(244, 249, 253);
+}   
 
 @keyframes goDown{
     0%{
@@ -18,8 +35,6 @@
         transform: translateY(0);
     }
 }
-
-
 .container{
     margin-top: 20px;
     display: flex;
