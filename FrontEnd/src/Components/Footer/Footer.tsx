@@ -1,11 +1,12 @@
 import { BsGithub } from "react-icons/bs";
 import {FaLink } from "react-icons/fa";
+import './Footer.css'
 
 export const Footer = () => {
   return (
     <div className='footer'>
       <div className='logo-section'>
-        Sezione dedicata al logo dell'applicazione
+        <img src="assets/logo5F.png"/> 
       </div>
       <div className='link-section'>
         <ul>
