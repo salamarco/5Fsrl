@@ -5,7 +5,7 @@ import Form from '../../../Components/Component_for_data/Form/Form.tsx';
 import {z} from 'zod'
 import {verifyAccount,logInAccount,signUpAccount,returnDataAccount} from './functions_for_access.ts' 
 import { Link } from 'react-router';
-import { signUpData } from '../../../Interfaces_and_types/Manage_account/interfaces_and_type_for_access.ts';
+import { signUpData } from '../../../Interfaces_and_types/Manage_account/interfaces_and_types_for_access.ts';
 
 // PROBLEMA NEL PASSAGGIO DELLE PROPS AL COMPONENTE FORM 
 

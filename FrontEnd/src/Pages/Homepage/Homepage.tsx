@@ -1,6 +1,6 @@
 import Footer from '../../Components/Footer/Footer.tsx';
 import Animated_text from '../../Components/Component_for_text/Typing_text.tsx';
-import Interactive_box from '../../Components/Interactive_box/Interactive_box.tsx';
+import Box_interactive from '../../Components/Boxes/Box_interactive/Box_interactive.tsx';
 import { Link } from 'react-router';
 import Data_boxes from './text_for_box.json'
 import './Homepage.css'
@@ -39,7 +39,7 @@ export const Homepage = () => {
                 <div className='Title'> <h3> Functionality </h3></div>
                 <div className='main-section-func'>
                     {Data_boxes.data.map((data,dataIndex) => (
-                        <Interactive_box 
+                        <Box_interactive 
                         key={dataIndex}
                         title={data.title}
                         sub_text={data.sub_text}
