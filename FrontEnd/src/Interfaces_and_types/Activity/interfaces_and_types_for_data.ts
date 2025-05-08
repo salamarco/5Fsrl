@@ -25,3 +25,9 @@ export const propsPersonal = z.object({
     description:z.string(),
     type:z.array(z.string())
 })
+
+export const filterData = z.object({
+    title:z.string(),
+    name: z.string(),
+    options:z.array(z.object({value:z.string(),title:z.string()}))
+})
