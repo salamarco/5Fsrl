@@ -16,6 +16,11 @@ def get_db_connection():
     return mysql.connector.connect(**db_config)
 
 
+# ENDPOINT /api/register
+# metodo: POST
+# metodo per la registrazione di un nuovo utente
+# parametri: username, email, password, nome, cognome
+# ritorno: [{'message'/'error' : 'dettagli'}, STATUS CODE]
 @app.route('/api/register', methods = ['POST'])
 def userRegistration():
 
@@ -58,6 +63,11 @@ def userRegistration():
             conn.close()
 
 
+# ENDPOINT /api/login
+# metodo: POST
+# metodo per il login di un utente
+# parametri: username, password
+# ritorno: [{'message'/'error' : 'dettagli'}, STATUS CODE]
 @app.route('/api/login', methods = ['POST'])
 def userLogin():
 
@@ -106,6 +116,43 @@ def userLogin():
             conn.close()
 
 
+# ENDPOINT /api/schools
+# metodo: GET
+# metodo per ottenere l'intera lista delle scuole
+# parametri: /
+# ritorno: lista di oggetti con proprietà:
+#                               -> id_scuola
+#                               -> nome_scuola
+#                               -> numero_anni
+#                               -> indirizzi (a sua volta lista di oggetti con proprietà id_indirizzo e nome_indirizzo)
+# esempio ritorno: [
+#  {
+#    "id_scuola": 1,
+#    "nome_scuola": "Istituto Tecnico Industriale",
+#    "numero_anni": 5,
+#    "indirizzi": [
+#      {
+#        "id_indirizzo": 1,
+#        "nome_indirizzo": "Informatica"
+#      },
+#      {
+#        "id_indirizzo": 2,
+#        "nome_indirizzo": "Elettronica"
+#      }
+#    ]
+#  },
+#  {
+#    "id_scuola": 2,
+#    "nome_scuola": "Liceo Scientifico",
+#    "numero_anni": 5,
+#    "indirizzi": [
+#      {
+#        "id_indirizzo": 3,
+#        "nome_indirizzo": "Scienze Applicate"
+#      }
+#    ]
+#  }
+# ]
 @app.route('/api/schools', methods = ['GET'])
 def getSchoolList():
     
@@ -142,6 +189,47 @@ def getSchoolList():
     cursor.close()
     conn.close()
     return jsonify(list(scuole_dict.values()))
+
+
+# ENDPOINT /api/subjects
+# metodo: GET
+# metodo per ottenere la lista delle materie (per ora tutte)
+# TO DO: restituire solo le materie dell'utente (per come è strutturato ora il DB non è possibile)
+# parametri: per ora no (dopo username)
+# ritorno: ['nome materia 1', 'nome materia 2', ...]
+@app.route('/api/subjects', methods = ['GET'])
+def getSubjects():
+
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    query = """
+        SELECT m.nome_materia
+        FROM Materie
+    """
+
+    cursor.execute(query)
+    risultato = cursor.fetchall()
+    materie = [m['nome_materia'] for m in risultato]
+
+    cursor.close()
+    conn.close()
+    return materie
+
+
+@app.route('/api/subjects', methods = ['POST'])
+def insertSubject():
+    ...
+
+
+@app.route('/api/subjects', methods = ['PUT'])
+def editSubject():
+    ...
+
+
+@app.route('/api/subjects', methods = ['DELETE'])
+def deleteSubject():
+    ...
 
 
 if __name__ == '__main__':

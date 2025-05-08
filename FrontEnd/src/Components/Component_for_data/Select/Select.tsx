@@ -1,6 +1,6 @@
 import React from 'react'
 import { useState } from 'react'
-import { dataSelect } from '../../../Interfaces_and_types/Manage_account/interfaces_and_type_for_access'
+import { dataSelect } from '../../../Interfaces_and_types/Manage_account/interfaces_and_types_for_access'
 
 interface select_props{
     data_select:Array<dataSelect>| undefined

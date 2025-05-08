@@ -1,7 +1,7 @@
 import Field from '../Field/Field.tsx'
 import { useFormStatus } from 'react-dom'
 import Select from '../Select/Select.tsx'
-import { dataElement } from '../../../Interfaces_and_types/Manage_account/interfaces_and_type_for_access.ts';
+import { dataElement } from '../../../Interfaces_and_types/Manage_account/interfaces_and_types_for_access.ts';
 
 interface form_props {
     method_http:'get' | 'post';

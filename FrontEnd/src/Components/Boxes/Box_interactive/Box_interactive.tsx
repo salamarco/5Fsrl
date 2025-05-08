@@ -8,7 +8,7 @@ interface Interactive_box_props{
   className: string;
 }
 
-export const Interactive_box: React.FC<Interactive_box_props> = ({title,sub_text,className}) => {
+export const Box_interactive: React.FC<Interactive_box_props> = ({title,sub_text,className}) => {
   const[hovered,setIsHovered] = useState(false)
 
   const contentVariants = {
@@ -57,4 +57,4 @@ export const Interactive_box: React.FC<Interactive_box_props> = ({title,sub_text
   )
 }
 
-export default Interactive_box;
+export default Box_interactive;

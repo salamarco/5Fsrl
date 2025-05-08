@@ -1,4 +1,4 @@
-import { dataElement } from '../../../Interfaces_and_types/Manage_account/interfaces_and_type_for_access';
+import { dataElement } from '../../../Interfaces_and_types/Manage_account/interfaces_and_types_for_access';
 
 interface field_props{
     element: dataElement;

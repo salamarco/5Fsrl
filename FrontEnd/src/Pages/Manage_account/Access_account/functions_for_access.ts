@@ -1,5 +1,5 @@
 import {z} from 'zod'
-import { signUpData } from '../../../Interfaces_and_types/Manage_account/interfaces_and_type_for_access'
+import { signUpData } from '../../../Interfaces_and_types/Manage_account/interfaces_and_types_for_access'
 
 const dataSelectSchema = z.object({
     nome_scuola:z.string(),
