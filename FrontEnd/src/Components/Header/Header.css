@@ -25,6 +25,10 @@
     background-color: rgb(244, 249, 253);
 }   
 
+.nav-link.active {
+    color: #007BFF;
+  }
+
 @keyframes goDown{
     0%{
         opacity: 0;
@@ -42,7 +46,7 @@
 
 }
 
-li{
+.nav-link{
     margin: 0 30px;
     font-size: 18px;
     font-weight: 500;
@@ -50,14 +54,22 @@ li{
     cursor: pointer;
 }
 
-li:hover{
-    color: #007BFF;
-    transition: color 0.1s ease-in-out;
+.nav-link a{
+    color: inherit;
 }
 
+.nav-link:hover{
+    color: #007BFF;
+    transition: color ease-in-out;
+}
+
+.nav-link:active{
+    color: #007BFF;
+}
 .sign-in{
     color: white;
     border-radius: 5px;
     text-decoration: none;
     width: 23px;
 }
+

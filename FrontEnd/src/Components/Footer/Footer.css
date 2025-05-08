@@ -6,3 +6,43 @@
     text-align: center;
 
 }
+
+a{
+    color: white;
+    
+}
+
+
+ul {
+    list-style-type: none;
+  }
+
+  .link-section ul div {
+    display: flex; /* Attiva il flexbox per i div contenitori */
+    align-items: center; /* Allinea verticalmente l'icona e il link al centro */
+  }
+  
+  .link-section ul div svg, /* Se FaLink e BsGithub sono componenti SVG */
+  .link-section ul div i { /* Se FaLink e BsGithub sono icon font (es. Font Awesome) */
+    margin-right: 10px;
+    font-size: 2em; /* Aggiunge uno spazio tra l'icona e il link */
+  }
+  
+  .link-section ul li {
+    font-size: 1.1em;
+    list-style-type: none; /* Rimuove i pallini predefiniti della lista */
+    margin: 5px 0; /* Aggiunge un po' di spazio verticale tra gli elementi della lista */
+  }
+
+.logo5F_bianco{
+    
+    width: 100px;
+    height: auto;
+    position: absolute;
+    right: 5px; 
+    
+    
+   
+}
+
+  
