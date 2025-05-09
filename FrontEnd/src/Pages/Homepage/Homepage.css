@@ -115,7 +115,7 @@
 
 .welcome::after {
   content: "Un planner digitale che aiuta a gestire le tue attività scolastiche e quotidiane!";
-  position: absolute;
+  position:absolute;
   top: 0;
   left: 0;
   width: 100%;
@@ -219,9 +219,8 @@
 
   .button-access:hover {
       background: linear-gradient(90deg, #1e90ff, #1533e1);
-      box-shadow: 0 0 10px rgba(30, 144, 255, 0.5), 0 0 20px rgba(30, 144, 255, 0.5), 0 0 30px rgba(30, 144, 255, 0.5);
       transform: scale(1.05);
-      transition: all 0.2s ease;
+      transition: all 0.1s ease;
       color: rgb(233, 233, 233);
     }
 

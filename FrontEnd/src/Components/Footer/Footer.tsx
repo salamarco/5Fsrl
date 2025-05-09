@@ -12,12 +12,12 @@ export const Footer = () => {
       <div className='link-section'>
         <ul>
           <div>
-            <FaLink />
-            <li><a href="https://www.isarchimede.edu.it/">ITIS Archimede site</a></li>
+            <FaLink/>
+            <li><a href="https://www.isarchimede.edu.it/" target="_blank">ITIS Archimede site</a></li>
           </div>
           <div>
             <BsGithub/>
-            <li><a href="https://github.com/salamarco/5Fsrl"> Project repository</a></li>
+            <li><a href="https://github.com/salamarco/5Fsrl" target="_blank"> Project repository</a></li>
           </div>
         </ul>
       </div>

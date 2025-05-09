@@ -1,0 +1,39 @@
+{
+    "verifiche":[{
+        "title": "",
+        "name":"",
+        "options":[{
+            "value":"",
+            "title":""
+        }]
+
+    }],
+    "lezioni": [{
+        "title": "",
+        "name":"",
+        "options":[{
+            "value":"",
+            "title":""
+        }]
+
+    }],
+    "compiti": [{
+        "title": "",
+        "name":"",
+        "options":[{
+            "value":"",
+            "title":""
+        }]
+
+    }],
+    "personal":[{
+        "title": "",
+        "name":"",
+        "options":[{
+            "value":"",
+            "title":""
+        }]
+
+    }]
+
+}
