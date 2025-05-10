@@ -1,6 +1,7 @@
 import React from 'react';
 import Header from '../../Components/Header/Header.tsx';
 import './Help.css';
+import {Footer} from '../../Components/Footer/Footer'
 
 const Help: React.FC = () => {
     return (
@@ -12,6 +13,7 @@ const Help: React.FC = () => {
                     <h2>Domande frequenti -- inventiamo -- </h2>
 
                     <h2>Contatti -- form -- </h2>
+                    <Footer />
         </div>
     );
 };
