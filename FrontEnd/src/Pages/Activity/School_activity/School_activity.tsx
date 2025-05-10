@@ -85,7 +85,7 @@ export const School_activity = () => {
           argument={subPage}
           propsSchema={subPage === "Lezioni" && propsLezioni || subPage === "Compiti" && propsCompiti || subPage === "Verifiche" && propsVerifica || undefined }
           functionForReturn={setSubPage}
-          dataForFilters={subPage === "Lezioni" && data_for_filter.lezioni || subPage === "Compiti" && data_for_filter.compiti || subPage === "Verifiche" && data_for_filter.verifiche || undefined }
+          dataForFilters={JSON.parse(JSON.stringify((subPage === "Lezioni" && data_for_filter.lezioni || subPage === "Compiti" && data_for_filter.compiti || subPage === "Verifiche" && data_for_filter.verifiche || undefined )))}
         />
       )
     )

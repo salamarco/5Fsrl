@@ -11,7 +11,6 @@ l'interfaccia prende:
 
 interface Typing_text_props {
   html_element: keyof JSX.IntrinsicElements;
-  className: string;
   text: string;
 }
 
@@ -29,7 +28,7 @@ const defaultAnimations = {
   },
 };
 
-export const Typing_text: React.FC<Typing_text_props> = ({html_element: Wrapper = 'html',className,text}) => {
+export const Typing_text: React.FC<Typing_text_props> = ({html_element: Wrapper = 'html',text}) => {
   return (
     
     <div className='main-section'>
@@ -41,7 +40,7 @@ export const Typing_text: React.FC<Typing_text_props> = ({html_element: Wrapper 
         animate="visible"
         aria-hidden
       >
-        <Wrapper className={className}>
+        <Wrapper>
           {text.split('').map((char,charIndex)=> (
             <motion.span key={`${char}-${charIndex}`} variants={defaultAnimations} >
               {char}

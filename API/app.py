@@ -28,6 +28,7 @@ def userRegistration():
     username = data.get('username')
     email = data.get('email')
     password = data.get('password')
+    ## Inserire la presa dei dati scolastici dell'utente: classe e indirizzo
     nome = data.get('nome')
     cognome = data.get('cognome')
 

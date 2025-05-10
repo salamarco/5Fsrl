@@ -27,7 +27,6 @@ const Homepage: React.FC<props_homepage> = ({isDone}) => {
                 <div className='welcome'>
                     <Animated_text
                         html_element='h2'
-                        className=''
                         text= 'Benvenuto in 5F srl !'
                     />
                 </div>
@@ -80,7 +79,6 @@ const Homepage: React.FC<props_homepage> = ({isDone}) => {
             <div className='welcome'>
                 <Animated_text
                     html_element='h2'
-                    className=''
                     text= 'Benvenuto in 5F srl !'
                 />
             </div>

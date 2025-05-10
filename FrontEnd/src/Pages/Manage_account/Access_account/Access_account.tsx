@@ -3,11 +3,9 @@ import definition_access_module from './access_module_definition.json'
 import { FaArrowRight, FaArrowLeft } from "react-icons/fa6";
 import Form from '../../../Components/Component_for_data/Form/Form.tsx';
 import {z} from 'zod'
-import {verifyAccount,logInAccount,signUpAccount,returnDataAccount} from './functions_for_access.ts' 
+import {verifyAccount,logInAccount,signUpAccount} from './functions_for_access.ts' 
 import { Link } from 'react-router';
-import { signUpData } from '../../../Interfaces_and_types/Manage_account/interfaces_and_types_for_access.ts';
-
-// PROBLEMA NEL PASSAGGIO DELLE PROPS AL COMPONENTE FORM 
+import { signUpData} from '../../../Interfaces_and_types/Manage_account/interfaces_and_types_for_access.ts';
 
 const defaultSignUpState: signUpData = {
   personal_data:{
@@ -38,10 +36,13 @@ export const Access_account = () => {
       const dataToValidate = Object.fromEntries(data)
       const formSchema = z.object({email:z.string(),username:z.string(),password:z.string()})
       const dataValidate = formSchema.safeParse(dataToValidate)
+      console.log("esegue funzione")
 
       if(dataValidate.success){
+        console.log("dati validati")
         
         if(!verifyAccount(dataValidate.data.email)){
+          console.log("collegamento con funzione funziona")
           const personalFormData: z.infer<typeof formSchema> = {
             email: dataValidate.data.email,
             username:dataValidate.data.username,
@@ -79,42 +80,49 @@ export const Access_account = () => {
     }
 
   const manageLogIn:functionForForm = (data) => {
-      const dataToValidate = Object.fromEntries(data)
-      const formSchema = z.object({email:z.string(),password:z.string()})
-      const dataValidate = formSchema.safeParse(dataToValidate)
+    const dataToValidate = Object.fromEntries(data)
+    const formSchema = z.object({email:z.string(),password:z.string()})
+    const dataValidate = formSchema.safeParse(dataToValidate)
 
-      if(dataValidate.success){
-        const email:string = dataValidate.data.email
-        const password:string = dataValidate.data.password 
-        if(verifyAccount(email)){
-          if(logInAccount(email,password)){
-            const dataAccount = returnDataAccount(email,password)
-            //funzione per settare il contesto con i dati ottenuti\
-            setIsAccessComplete(true)
-          }
+    if(dataValidate.success){
+      const email:string = dataValidate.data.email
+      const password:string = dataValidate.data.password 
+      //if(verifyAccount(email)){
+      logInAccount(email,password).then(res => {
+        if(res.value === false){
+          setErrorForm({isError:true,details:res.message})
+        }else{
+            //funzione per settare il contesto con i dati ottenuti
+            setIsAccessComplete(res.value)
         }
-      }else{
-        setErrorForm({isError:true,details:"Problemi nell'applicazione,riprova piu' tardi"})
-      }
+      })
+    }else{
+      setErrorForm({isError:true,details:"Problemi con il form"})
     }
+  }
 
   return (
     <div id='accessPage'>
       {!isAccessComplete ? (
         <div className='access-module'>
+          ({errorForm.isError && (
+            <div id='error'>
+              {errorForm.details}
+            </div>
+          )})
           {logIn ? (
             <div className='sign-in-module'> 
               <div className='data-form'>
                 <Form
                   method_http="post"
-                  data_fields={definition_access_module.log_in}
-                  function_to_excute={manageLogIn}
+                  data_fields={JSON.parse(JSON.stringify(definition_access_module.log_in))}
+                  functionToExecute={manageLogIn}
                 />
-                {errorForm.isError && (
+                ({errorForm.isError && (
                   <div>
                     {errorForm.details}
                   </div>
-                )}
+                )})
               </div>
               <div className='button-for-sign-up'>
                 <p> Non hai un account? </p>
@@ -129,28 +137,28 @@ export const Access_account = () => {
               <div className='personal-data'>
                 <Form
                   method_http="post"
-                  data_fields={definition_access_module.sign_up.dati_personali} 
-                  function_to_excute={setPersonalDataSignUp}
+                  data_fields={JSON.parse(JSON.stringify(definition_access_module.sign_up.dati_personali))} 
+                  functionToExecute={setPersonalDataSignUp}
                 />
-                {errorForm.isError && (
+                ({errorForm.isError && (
                   <div>
                     {errorForm.details}
                   </div>
-                )}
+                )})
               </div>
               
               ):(
               <div className='school-data'>
                 <Form
                   method_http="post"
-                  data_fields={definition_access_module.sign_up.dati_scuola}
-                  function_to_excute={setSchoolDataSignUp}
+                  data_fields={JSON.parse(JSON.stringify(definition_access_module.sign_up.dati_scuola ))}
+                  functionToExecute={setSchoolDataSignUp}
                 />
-                {errorForm.isError && (
+                ({errorForm.isError && (
                   <div>
                     {errorForm.details}
                   </div>
-                )}
+                )})
               </div>
             )}
             <div className='button-for-log-in'>
@@ -171,7 +179,6 @@ export const Access_account = () => {
           </Link>
         </div>
       )}
-
     </div>
   )
 }

@@ -1,37 +1,14 @@
 import {z} from 'zod'
 import { signUpData } from '../../../Interfaces_and_types/Manage_account/interfaces_and_types_for_access'
 
-const dataSelectSchema = z.object({
-    nome_scuola:z.string(),
-    text:z.string(),
-    indirizzi:z.array(z.object({nome_indirizzo:z.string(),text_indirizzo:z.string()})),
-    n_years:z.array(z.string())
-})
-
-const dataAPItype = z.array(dataSelectSchema)
-
-//funzione che restituisce i dati delle scuole presi dall'API del backend
-export const fetchSchoolData = async() => {
-    const urlAPI = ''
-    try {
-        const response = await fetch(urlAPI);
-        if (!response.ok) {
-            throw new Error(`Errore HTTP: ${response.status}`);
-        }
-        const jsonData = await response.json();
-    
-        // 4. VALIDAZIONE CON ZOD!
-        // .parse() lancia un errore se la validazione fallisce
-        const validatedData = dataAPItype.parse(jsonData);
-    
-        // Se arriva qui, i dati sono validi e conformi allo schema (e quindi all'interfaccia)
-        return(validatedData)
-    
-    } catch (err) {
-        console.log(err)
-        return undefined
-    }
-}
+const responseLogInSchema = z.object({
+    message:z.string().optional(),
+    error:z.string().optional(),
+    user:z.object({
+        personal_data: z.object({username:z.string(),email:z.string(),password:z.string()}),
+        school_data:z.object({scuola:z.string(),indirizzo:z.string(),classe:z.string()})
+    }).optional()
+}) 
 
 //funzione che invia l'email al backend, che verifica che l'email sia registrata, se lo e' restituisce true
 // se non lo e' false DA IMPLEMENTARE
@@ -41,21 +18,68 @@ export const verifyAccount: (email:string) => boolean = (email) => {
     return true
 }
 
-//funzione che invia le credenziali di accesso al form e verifica che siano valide, se lo sono restituisce true
-// altrimenti restituiusce false DA IMPLEMENTARE
-export const logInAccount: (email:string,password:string) => boolean = (email, password) => {
-    //funzione che prende in input l'email e la password e verifica restituisce
-    // json con un messaggio di errore se le credenziali non sono valide
-    // oppure un json con tutti i dati dell'utente
-    return true
+// Funzione che invia le credenziali per il Login, restituisce un ou oggetto con value false e messaggio di errore se
+// le credenziali non sono valide, altrimenti restisce value true, messaggio di successo e i dati dell'utente: FINITO(da testare)
+export const logInAccount: (email:string,password:string) => Promise<{value:boolean,message:string,data?:signUpData}> = (email, password) => {
+
+    const data = {username:email,password:password}
+    const headers: Headers = new Headers()
+    headers.set('Content-Type', 'application/json')
+    headers.set('Accept', 'application/json')
+
+    const request: RequestInfo = new Request('/api/login', {
+        method: 'POST',
+        headers: headers,
+        body: JSON.stringify(data)
+    })
+
+    const operation = fetch(request)
+    return (operation.then((res => {
+        const dataValidate = responseLogInSchema.safeParse(JSON.parse(JSON.stringify(res.body)))
+        if(dataValidate.success && dataValidate.data.user){
+            const message = (dataValidate.data.message ? dataValidate.data.message : "Problema nel reperimento del messaggio")
+            const error = (dataValidate.data.error ? dataValidate.data.error: "Problema nel reperimento dell'errore")
+            if(res.status >= 400 ){
+                return({value:false,message:error})
+            }else if(res.status === 200){
+                return({value:true,message:message,data:dataValidate.data.user})
+            }else{
+                return({value:false,message:"Errore a livello di funzione"})
+            }
+        }else{
+            return({value:false,message:"Errore a livello di funzione"})
+        }
+    })))
+    
 }
 
-// funzione che invia i dati per la registrazione al backend, se va a buon fine restituisce true altrimenti
-// restituisce false  DA IMPLEMENTARE
-export const signUpAccount: (data: signUpData) => boolean = (data) => {
-    // funzione che prende in input tutti i dati dell'utente e lo registra
-    // restituisce true se è andata a buon fine oppure false se non è andata bene
-    return true
+// Funziona che invia i dati di registrazione, restituisce un oggetto con value true e il messaggio di successo se la registrazione
+// va a buon fine, altrimenti value false e un messaggio di errore: FINITO(da testare)
+export const signUpAccount: (data: signUpData) => Promise<{value:boolean,message:string}> = (data) => {
+
+    const headers: Headers = new Headers()
+    headers.set('Content-Type', 'application/json')
+    headers.set('Accept', 'application/json')
+
+    const request: RequestInfo = new Request('/api/register', {
+        method: 'POST',
+        headers: headers,
+        body: JSON.stringify(data)
+    })
+
+    const operation = fetch(request)
+
+    return(operation.then(res => {
+        const dataValidate = responseLogInSchema.safeParse(JSON.parse(JSON.stringify(res.body)))
+        if(dataValidate.success){
+            const message = (dataValidate.data.message ? dataValidate.data.message : "Problema nel reperimento del messaggio")
+            const error = (dataValidate.data.error ? dataValidate.data.error: "Problema nel reperimento dell'errore")
+            const HTTP_response:number = res.status
+            return((HTTP_response >= 400 && {value:false,message:error} || HTTP_response === 200 && {value:false,message:message} || {value:false,message:"Errore a livello di funzione"}))
+        }else{
+            return ({value:false,message:"Errore a livello di funzione"})
+        }
+    }))
 }
 
 // funzione che prende le credenziali dell'account e restituisce tutti i dati relativi all'account nel formato
@@ -72,7 +96,6 @@ export const returnDataAccount: (email:string,password:string) => signUpData = (
               indirizzo:undefined,
               classe:undefined
           }
-
     })
     
 }

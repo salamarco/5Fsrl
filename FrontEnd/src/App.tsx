@@ -14,7 +14,7 @@ function App() {
   // Tutto questo serve per tener traccia del tempo passato dall'apertura dell'applicazione,
   // in modo da far fare l'animazione dell'header solo all'inizio, e non ogni volta che si cambia pagina
   const [secondsElapsed, setSecondsElapsed] = useState(0);
-  var done = false;
+  let done = false;
 
   useEffect(() => {
     const interval = setInterval(() => {

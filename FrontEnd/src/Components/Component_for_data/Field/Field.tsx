@@ -11,23 +11,23 @@ export const Field: React.FC<field_props> = ({element,elementIndex,state_disable
   const renderTag = () => {
     const TagName = element.tag;
     const props: {[key:string]:string | number | boolean | {(value:string) : void} } = {
-      key: elementIndex,
       ...(element.name && {name: element.name}),
-      ...(element.type && (TagName === "button" || TagName === "input") && {type:element.type}),
+      ...(element.type && {type:element.type}),
       ...(TagName === "input" && {required:true}),
       ...(TagName === "button" && {disabled:state_disabled}),
     }
     const children: string | undefined = (
       TagName === "label" && element.text || 
-      TagName === "button" && state_disabled ? element.text_pre_submit : element.text_post_submit
+      TagName === "button" && (state_disabled ? element.text_post_submit : element.text_pre_submit) ||
+      undefined
     )
     
-    return (<TagName {...props}>{children}</TagName>)
+    return (<TagName key = {elementIndex} {...props}>{children}</TagName>)
   }
-    
-    return (
+
+  return (
     <div>
-        {renderTag()}
+      {renderTag()}
     </div>
   )
 }

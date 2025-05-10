@@ -27,7 +27,7 @@ export const Select: React.FC<select_props> = ({data_select,default_element}) =>
                             </option>
                         ):(
                             <option key={rootIndex} value={root.nome_scuola}>
-                                {root.text}
+                                {root.nome_scuola}
                             </option>
                         )
                     ))}
@@ -42,13 +42,13 @@ export const Select: React.FC<select_props> = ({data_select,default_element}) =>
                                     </option>
                                 ):(
                                     <option key={childrenIndex} value={children.nome_indirizzo}>
-                                        {children.text_indirizzo}
+                                        {children.nome_indirizzo}
                                     </option>
                                 )
                             ))}
                         </select>
                         <select>
-                            {data_select[elementSelect.index].n_years.map((children,childrenIndex) => (
+                            {data_select[elementSelect.index].numero_anni.map((children,childrenIndex) => (
                                 (childrenIndex === 0) ? (
                                     <option key={childrenIndex} value="default">
                                         {default_element[2]}

@@ -38,7 +38,6 @@ export const Sub_page: React.FC<subPage_props> = ({propsSchema,argument,function
             <Typing_text 
             text={argument}
             html_element='h4'
-            className=''
             />
           </div>
           <div id='button-for-return'>

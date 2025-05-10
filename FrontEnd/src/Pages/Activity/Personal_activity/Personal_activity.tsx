@@ -57,7 +57,7 @@ export const Personal_activity = () => {
         argument={isSubPage}
         propsSchema={propsPersonal}
         functionForReturn={setIsSubPage}
-        dataForFilters={data_for_filters.personal}
+        dataForFilters={JSON.parse(JSON.stringify(data_for_filters.personal))}
       />
     ))
     
