@@ -23,6 +23,7 @@ export const Box_activity: React.FC<propsBoxActivity> = ({data}) => {
     }
     printDataActivity()
   }, [data]);
+  
   return (
     (data ? (
       <div id='box/activity'>

@@ -6,6 +6,7 @@ import {z} from 'zod'
 import {verifyAccount,logInAccount,signUpAccount} from './functions_for_access.ts' 
 import { Link } from 'react-router';
 import { signUpData} from '../../../Interfaces_and_types/Manage_account/interfaces_and_types_for_access.ts';
+import { useAuth} from '../../../Contexts/User_context/User_context.tsx';
 
 const defaultSignUpState: signUpData = {
   personal_data:{
@@ -28,7 +29,7 @@ export const Access_account = () => {
   const[isFirstPage,setIsFirstPage] = useState<boolean>(true);
   const [dataSignUp,setDataSignUp] = useState<signUpData>(defaultSignUpState)
   const[errorForm,setErrorForm] = useState<{isError:boolean,details:string}>({isError: false,details:""})
-  const[isAccessComplete,setIsAccessComplete] = useState<boolean>(false)
+  const{state,dispatch} = useAuth()
 
   //scrivere funzione che controlla i dati inviati dal form, controllando che non siano nulli
 
@@ -72,8 +73,7 @@ export const Access_account = () => {
         }
         setDataSignUp({...dataSignUp, school_data:schoolFormData})
         signUpAccount(dataSignUp)
-        //qua poi si dovra' chiamare la funzione per impostare un contesto con i dati dell'account
-        setIsAccessComplete(true)
+        dispatch({type:'LOGIN', data:dataSignUp})
       }else{
         setErrorForm({isError:true,details:"Problemi nell'applicazione,riprova piu' tardi"})
       }
@@ -92,8 +92,7 @@ export const Access_account = () => {
         if(res.value === false){
           setErrorForm({isError:true,details:res.message})
         }else{
-            //funzione per settare il contesto con i dati ottenuti
-            setIsAccessComplete(res.value)
+            dispatch({type:'LOGIN', data:res.data})
         }
       })
     }else{
@@ -103,13 +102,13 @@ export const Access_account = () => {
 
   return (
     <div id='accessPage'>
-      {!isAccessComplete ? (
+      {!state.isLoggedIn ? (
         <div className='access-module'>
-          ({errorForm.isError && (
+          {(errorForm.isError && (
             <div id='error'>
               {errorForm.details}
             </div>
-          )})
+          ))}
           {logIn ? (
             <div className='sign-in-module'> 
               <div className='data-form'>
@@ -118,11 +117,11 @@ export const Access_account = () => {
                   data_fields={JSON.parse(JSON.stringify(definition_access_module.log_in))}
                   functionToExecute={manageLogIn}
                 />
-                ({errorForm.isError && (
+                {(errorForm.isError && (
                   <div>
                     {errorForm.details}
                   </div>
-                )})
+                ))}
               </div>
               <div className='button-for-sign-up'>
                 <p> Non hai un account? </p>
@@ -140,11 +139,11 @@ export const Access_account = () => {
                   data_fields={JSON.parse(JSON.stringify(definition_access_module.sign_up.dati_personali))} 
                   functionToExecute={setPersonalDataSignUp}
                 />
-                ({errorForm.isError && (
+                {(errorForm.isError && (
                   <div>
                     {errorForm.details}
                   </div>
-                )})
+                ))}
               </div>
               
               ):(
@@ -154,11 +153,11 @@ export const Access_account = () => {
                   data_fields={JSON.parse(JSON.stringify(definition_access_module.sign_up.dati_scuola ))}
                   functionToExecute={setSchoolDataSignUp}
                 />
-                ({errorForm.isError && (
+                {(errorForm.isError && (
                   <div>
                     {errorForm.details}
                   </div>
-                )})
+                ))}
               </div>
             )}
             <div className='button-for-log-in'>
@@ -171,12 +170,47 @@ export const Access_account = () => {
           )}
         </div>
       ): (
-        <div>
-          <Link to="/Dashboard">
-            <button>
-              Benvenuto in nome.app
-            </button>
-          </Link>
+        <div className='entered'>
+          <div className='check-data'>
+            <h5>Verifica i tuoi dati: </h5>
+            <div className='personal-data'>
+
+            </div>
+            <div className='school-data'>
+
+            </div>
+            <div className='choose'>
+              <div className='option-continue'>
+                <p>se i dati visualizzati corrispondo ai tuoi </p>
+                <Link to="/Dashboard">
+                  <button>
+                    Benvenuto in nome.app
+                  </button>
+                </Link>
+              </div>
+
+              <div className='log-out-or-edit'>
+                <p>se i dati inseriti non corrispondono, o li vuoi modificare</p>
+                <div className='buttons'>
+
+                  <div className='button-for-edit'>
+                    <Link to="/ManageAccount">
+                      <button>
+                        Modifica dati
+                      </button>
+                    </Link>
+                  </div>
+
+                  <div className='button-for-log-out'>
+                    <button onClick={() => {dispatch({type:'LOGOUT'})}}>
+                      Log out
+                    </button>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       )}
     </div>
