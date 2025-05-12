@@ -6,6 +6,7 @@ import { useState,useEffect } from 'react';
 import Sub_page from '../../../Components/Sub_page/Sub_page.tsx';
 import { propsVerifica,propsCompiti,propsLezioni } from '../../../Interfaces_and_types/Activity/interfaces_and_types_for_data.ts';
 import data_for_filter from '../data_for_filters.json'
+import Sidebar from '../../../Components/Sidebar/Sidebar.tsx';
 
 
 export const School_activity = () => {
@@ -25,61 +26,64 @@ export const School_activity = () => {
       }, []);
 
   return (
-    (subPage === "" ? (
-      <div id='school-activity'>
-        <div id='title'>
-          <Typing_text
-            html_element='h3'
-            text='School Activity'
-            className=''
+    <div id='complete-page'>
+      <div className='sidebar'>
+            <Sidebar />
+      </div>
+      {(subPage === "" ? (
+        <div id='school-activity'>
+          <div id='title'>
+            <Typing_text
+              html_element='h3'
+              text='School Activity'
+            />
+          </div>
+        <div id='highlights'>
+          <Box_highlights 
+          
           />
         </div>
-      <div id='highlights'>
-        <Box_highlights 
-        
-        />
-      </div>
 
-      <div id='verifiche'>
-        {dataToVisualize?.verifiche.map((element,elementIndex) => {
-            if(elementIndex < 5){
-              return <Box_activity data={element}/>
-            }
-        })}
-        <div id='button-for-page'>
-            <button onClick={() => setSubPage("Verifiche")}>
-              <FaCirclePlus />
-            </button>
+        <div id='verifiche'>
+          {dataToVisualize?.verifiche.map((element,elementIndex) => {
+              if(elementIndex < 5){
+                return <Box_activity data={element}/>
+              }
+          })}
+          <div id='button-for-page'>
+              <button onClick={() => setSubPage("Verifiche")}>
+                <FaCirclePlus />
+              </button>
+          </div>
+        </div>
+
+        <div id='compiti'>
+          {dataToVisualize?.compiti.map((element,elementIndex) => {
+              if(elementIndex < 5){
+                return <Box_activity data={element}/>
+              }
+          })}
+
+          <div id='button-for-page'>
+              <button onClick={() => setSubPage("Compiti")}>
+                <FaCirclePlus />
+              </button>
+          </div>
+        </div>
+
+        <div id='lezioni'>
+          {dataToVisualize?.lezioni.map((element,elementIndex) => {
+              if(elementIndex < 5){
+                return <Box_activity data={element}/>
+              }
+          })}
+          <div id='button-for-page'>
+              <button onClick={() => setSubPage("Lezioni")}>
+                <FaCirclePlus />
+              </button>
+          </div>
         </div>
       </div>
-
-      <div id='compiti'>
-        {dataToVisualize?.compiti.map((element,elementIndex) => {
-            if(elementIndex < 5){
-              return <Box_activity data={element}/>
-            }
-        })}
-
-        <div id='button-for-page'>
-            <button onClick={() => setSubPage("Compiti")}>
-              <FaCirclePlus />
-            </button>
-        </div>
-      </div>
-
-      <div id='lezioni'>
-        {dataToVisualize?.lezioni.map((element,elementIndex) => {
-            if(elementIndex < 5){
-              return <Box_activity data={element}/>
-            }
-        })}
-        <div id='button-for-page'>
-            <button onClick={() => setSubPage("Lezioni")}>
-              <FaCirclePlus />
-            </button>
-        </div>
-      </div>
-    </div>
       ): (
         <Sub_page
           argument={subPage}
@@ -88,7 +92,8 @@ export const School_activity = () => {
           dataForFilters={JSON.parse(JSON.stringify((subPage === "Lezioni" && data_for_filter.lezioni || subPage === "Compiti" && data_for_filter.compiti || subPage === "Verifiche" && data_for_filter.verifiche || undefined )))}
         />
       )
-    )
+    )}
+  </div>
   )
 }
 

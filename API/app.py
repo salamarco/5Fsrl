@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 import mysql.connector
 from mysql.connector import Error
+from contextlib import contextmanager
 
 app = Flask(__name__)
 
@@ -12,8 +13,23 @@ db_config = {
 }
 
 
-def get_db_connection():
-    return mysql.connector.connect(**db_config)
+# Context manager per gestione connessione/cursore
+@contextmanager
+def get_cursor(dictionary=False):
+    conn = None
+    cursor = None
+    try:
+        conn = mysql.connector.connect(**db_config)
+        cursor = conn.cursor(dictionary=dictionary)
+        yield cursor
+        conn.commit()
+    except Error as e:
+        raise e
+    finally:
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()
 
 
 # ENDPOINT /api/register
@@ -21,9 +37,8 @@ def get_db_connection():
 # metodo per la registrazione di un nuovo utente
 # parametri: username, email, password, nome, cognome
 # ritorno: [{'message'/'error' : 'dettagli'}, STATUS CODE]
-@app.route('/api/register', methods = ['POST'])
+@app.route('/api/register', methods=['POST'])
 def userRegistration():
-
     data = request.json
     username = data.get('username')
     email = data.get('email')
@@ -36,32 +51,21 @@ def userRegistration():
         return jsonify({'error': 'Dati mancanti'}), 400
 
     try:
-        conn = get_db_connection()
-        cursor = conn.cursor()
+        with get_cursor() as cursor:
+            cursor.execute("SELECT COUNT(*) FROM utenti WHERE email = %s", (email,))
+            email_exists = cursor.fetchone()[0]
 
-        cursor.execute("SELECT COUNT(*) FROM utenti WHERE email = %s", (email))
-        email_exists = cursor.fetchone()[0]
+            if email_exists > 0:
+                return jsonify({'error': 'L\'email è già registrata'}), 400
 
-        if email_exists > 0:
-            return jsonify({'error': 'L\'email è già registrata'}), 400
-
-        insert_query = """
-        INSERT INTO utenti (username, email, password, nome, cognome)
-        VALUES (%s, %s, %s, %s, %s)
-        """
-        cursor.execute(insert_query, (username, email, password, nome, cognome))
-        conn.commit()
-
-        return jsonify({'message': 'Utente registrato con successo'}), 201
-
+            insert_query = """
+            INSERT INTO utenti (username, email, password, nome, cognome)
+            VALUES (%s, %s, %s, %s, %s)
+            """
+            cursor.execute(insert_query, (username, email, password, nome, cognome))
+            return jsonify({'message': 'Utente registrato con successo'}), 201
     except Error as e:
         return jsonify({'error': str(e)}), 500
-
-    finally:
-        if cursor:
-            cursor.close()
-        if conn:
-            conn.close()
 
 
 # ENDPOINT /api/login
@@ -69,9 +73,8 @@ def userRegistration():
 # metodo per il login di un utente
 # parametri: username, password
 # ritorno: [{'message'/'error' : 'dettagli'}, STATUS CODE]
-@app.route('/api/login', methods = ['POST'])
+@app.route('/api/login', methods=['POST'])
 def userLogin():
-
     data = request.json
     username = data.get('username')
     password = data.get('password')
@@ -80,41 +83,30 @@ def userLogin():
         return jsonify({'error': 'Dati mancanti'}), 400
 
     try:
-        conn = get_db_connection()
-        cursor = conn.cursor(dictionary=True)
+        with get_cursor(dictionary=True) as cursor:
+            query = """
+            SELECT username, email, nome, cognome, password_hash
+            FROM utenti
+            WHERE username = %s
+            """
+            cursor.execute(query, (username,))
+            result = cursor.fetchone()
 
-        query = """
-        SELECT username, email, nome, cognome, password_hash
-        FROM utenti
-        WHERE username = %s
-        """
+            if result is None:
+                return jsonify({'error': 'Utente non trovato'}), 404
 
-        cursor.execute(query, (username))
-        result = cursor.fetchone()
-
-        if result is None:
-            return jsonify({'error': 'Utente non trovato'}), 404
-
-        stored_password = result['password_hash']
-        if stored_password == password:
-            user_data = {
-                'username': result['username'],
-                'email': result['email'],
-                'nome': result['nome'],
-                'cognome': result['cognome']
-            }
-            return jsonify({'message': 'Login effettuato con successo', 'user': user_data}), 200
-        else:
-            return jsonify({'error': 'Credenziali errate'}), 401
-
+            if result['password_hash'] == password:
+                user_data = {
+                    'username': result['username'],
+                    'email': result['email'],
+                    'nome': result['nome'],
+                    'cognome': result['cognome']
+                }
+                return jsonify({'message': 'Login effettuato con successo', 'user': user_data}), 200
+            else:
+                return jsonify({'error': 'Credenziali errate'}), 401
     except Error as e:
         return jsonify({'error': str(e)}), 500
-
-    finally:
-        if cursor:
-            cursor.close()
-        if conn:
-            conn.close()
 
 
 # ENDPOINT /api/schools
@@ -154,83 +146,40 @@ def userLogin():
 #    ]
 #  }
 # ]
-@app.route('/api/schools', methods = ['GET'])
+@app.route('/api/schools', methods=['GET'])
 def getSchoolList():
-    
-    conn = get_db_connection()
-    cursor = conn.cursor(dictionary=True)
+    try:
+        with get_cursor(dictionary=True) as cursor:
+            query = """
+                SELECT s.id_scuola, s.nome_scuola, s.numero_anni,
+                       i.id_indirizzo, i.nome_indirizzo
+                FROM Scuole s
+                LEFT JOIN Indirizzi i
+                ON s.id_scuola = i.id_scuola
+                ORDER BY s.id_scuola;
+            """
+            cursor.execute(query)
+            rows = cursor.fetchall()
 
-    query = """
-        SELECT s.id_scuola, s.nome_scuola, s.numero_anni,
-               i.id_indirizzo, i.nome_indirizzo
-        FROM Scuole s
-        LEFT JOIN Indirizzi i
-        ON s.id_scuola = i.id_scuola
-        ORDER BY s.id_scuola;
-    """
-    cursor.execute(query)
-    rows = cursor.fetchall()
+            scuole_dict = {}
+            for row in rows:
+                id_scuola = row['id_scuola']
+                if id_scuola not in scuole_dict:
+                    scuole_dict[id_scuola] = {
+                        'id_scuola': id_scuola,
+                        'nome_scuola': row['nome_scuola'],
+                        'numero_anni': row['numero_anni'],
+                        'indirizzi': []
+                    }
+                if row['id_indirizzo']:
+                    scuole_dict[id_scuola]['indirizzi'].append({
+                        'id_indirizzo': row['id_indirizzo'],
+                        'nome_indirizzo': row['nome_indirizzo']
+                    })
 
-    scuole_dict = {}
-    for row in rows:
-        id_scuola = row['id_scuola']
-        if id_scuola not in scuole_dict:
-            scuole_dict[id_scuola] = {
-                'id_scuola': id_scuola,
-                'nome_scuola': row['nome_scuola'],
-                'numero_anni': row['numero_anni'],
-                'indirizzi': []
-            }
-        if row['id_indirizzo']:
-            scuole_dict[id_scuola]['indirizzi'].append({
-                'id_indirizzo': row['id_indirizzo'],
-                'nome_indirizzo': row['nome_indirizzo']
-            })
-
-    cursor.close()
-    conn.close()
-    return jsonify(list(scuole_dict.values()))
-
-
-# ENDPOINT /api/subjects
-# metodo: GET
-# metodo per ottenere la lista delle materie (per ora tutte)
-# TO DO: restituire solo le materie dell'utente (per come è strutturato ora il DB non è possibile)
-# parametri: per ora no (dopo username)
-# ritorno: ['nome materia 1', 'nome materia 2', ...]
-@app.route('/api/subjects', methods = ['GET'])
-def getSubjects():
-
-    conn = get_db_connection()
-    cursor = conn.cursor(dictionary=True)
-
-    query = """
-        SELECT m.nome_materia
-        FROM Materie
-    """
-
-    cursor.execute(query)
-    risultato = cursor.fetchall()
-    materie = [m['nome_materia'] for m in risultato]
-
-    cursor.close()
-    conn.close()
-    return materie
-
-
-@app.route('/api/subjects', methods = ['POST'])
-def insertSubject():
-    ...
-
-
-@app.route('/api/subjects', methods = ['PUT'])
-def editSubject():
-    ...
-
-
-@app.route('/api/subjects', methods = ['DELETE'])
-def deleteSubject():
-    ...
+            return jsonify(list(scuole_dict.values()))
+    except Error as e:
+        return jsonify({'error': str(e)}), 500
 
 
 if __name__ == '__main__':

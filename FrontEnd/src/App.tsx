@@ -6,7 +6,9 @@ import School_activity from './Pages/Activity/School_activity/School_activity.ts
 import Personal_activity from './Pages/Activity/Personal_activity/Personal_activity.tsx'
 import About from "./Pages/About/About.tsx"
 import Help from "./Pages/Help/Help.tsx"
+import Page_account from './Pages/Manage_account/Page_account/Page_account.tsx'
 import { useEffect, useState } from "react";
+import { AuthProvider } from './Contexts/User_context/User_context.tsx'
 
 function App() {
 
@@ -30,9 +32,11 @@ function App() {
 
   return (
    <div>
-       <BrowserRouter>
+      <AuthProvider>
+        <BrowserRouter>
           <Routes>
             <Route path="/AccessPage" element={<Access_account />} />
+            <Route path="/ManageAccount" element={<Page_account />} />
             <Route path="/" element={<Homepage isDone={done}/>} />
             <Route path="/Dashboard" element= {<Dashboard/>} />
             <Route path="/PersonalActivity" element= {<Personal_activity/>} />
@@ -40,8 +44,8 @@ function App() {
             <Route path="/About" element={<About />} />
             <Route path="/Help" element={<Help />} />
           </Routes>
-      </BrowserRouter>
-
+        </BrowserRouter>
+      </AuthProvider>
    </div>
   )
 }

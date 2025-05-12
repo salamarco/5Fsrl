@@ -1,15 +1,12 @@
-import {Link} from 'react-router'
+import {Link,useLocation} from 'react-router'
 import { FaRegCalendarAlt,FaCalendarAlt } from "react-icons/fa";
-import { IoSchoolOutline,IoSchool,IoMenu } from "react-icons/io5";
-import { IoMapOutline,IoMap } from "react-icons/io5";
-import { useEffect, useState } from 'react';
-
+import { IoSchoolOutline,IoSchool,IoMenu, IoMapOutline,IoMap, IoHome} from "react-icons/io5";
 
 export const Sidebar = () => {
-  const[iconSelect,setIconSelect] = useState<string>()
-  useEffect(() => {
+  const location = useLocation();
+  const currentPath = location.pathname;
 
-  },[setIconSelect])
+  const isActive = (path: string) => currentPath === path ? true : false;
 
   return (
     <div id='sidebar'>
@@ -20,8 +17,8 @@ export const Sidebar = () => {
       </div>
       <div id='dashboard'>
         <Link to="/DashBoard">
-          <button onClick={() => setIconSelect("dashboard")}>
-            ({iconSelect === "dashboard"} ? 
+          <button>
+            ({isActive("/DashBoard")} ? 
               <FaCalendarAlt />
             ):(
               <FaRegCalendarAlt />
@@ -31,8 +28,8 @@ export const Sidebar = () => {
       </div>
       <div id='school'>
         <Link to="/PersonalActivity">
-          <button onClick={() => setIconSelect("school")}>
-            ({iconSelect === "school"} ? 
+          <button>
+            ({isActive("PersonalActivity")} ? 
               <IoSchool />
             ):(
               <IoSchoolOutline />
@@ -42,12 +39,19 @@ export const Sidebar = () => {
       </div>
       <div id='dashboard'>
         <Link to="SchoolActivity">
-          <button onClick={() => setIconSelect("dashboard")}>
-            ({iconSelect === "dashboard"} ? 
+          <button>
+            ({isActive("SchoolActivity")} ? 
               <IoMap />
             ):(
               <IoMapOutline />
             )
+          </button>
+        </Link>
+      </div>
+      <div id='bottom-part'>
+        <Link to="/">
+          <button>
+            <IoHome/>
           </button>
         </Link>
       </div>

@@ -1,4 +1,9 @@
 
+export interface userState{
+    isLoggedIn: boolean,
+    userData?: signUpData
+}
+
 export interface signUpData{
     personal_data: {
       username: string | undefined,
