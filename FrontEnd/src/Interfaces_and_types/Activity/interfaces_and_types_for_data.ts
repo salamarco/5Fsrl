@@ -1,5 +1,18 @@
 import {z} from 'zod'
 
+export interface subPageState{
+    modeToOpenBox: 'view' | 'edit' | 'delete' |'add'| undefined,
+    data?: typeof propsCompiti | typeof propsVerifica | typeof propsPersonal | typeof propsLezioni,
+    argumentActivity?: 'Personal' | 'Verifiche' | 'Lezioni' | 'Compiti'
+}
+
+export interface activityState{
+    list_lezioni: Array<typeof propsCompiti>,
+    list_verifiche: Array<typeof propsVerifica>,
+    list_compiti: Array<typeof propsLezioni>,
+    list_personali: Array<typeof propsPersonal>,
+}
+
 export const propsVerifica = z.object({
     title:z.string(),
     date:z.string(),
@@ -31,3 +44,10 @@ export const filterData = z.object({
     name: z.string(),
     options:z.array(z.object({value:z.string(),title:z.string()}))
 })
+
+export interface dataFromFilterJSON {
+    Verifiche: Array<typeof filterData>,
+    Lezioni: Array<typeof filterData>,
+    Compiti: Array<typeof filterData>,
+    Personal: Array<typeof filterData>,
+}

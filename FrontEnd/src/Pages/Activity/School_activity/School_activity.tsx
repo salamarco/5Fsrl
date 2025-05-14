@@ -2,28 +2,15 @@ import Box_activity from '../../../Components/Boxes/Box_activity/Box_activity.ts
 import Box_highlights from '../../../Components/Boxes/Box_highlights/Box_highlights.tsx';
 import Typing_text from '../../../Components/Component_for_text/Typing_text.tsx';
 import { FaCirclePlus } from "react-icons/fa6";
-import { useState,useEffect } from 'react';
+import { useState} from 'react';
 import Sub_page from '../../../Components/Sub_page/Sub_page.tsx';
-import { propsVerifica,propsCompiti,propsLezioni } from '../../../Interfaces_and_types/Activity/interfaces_and_types_for_data.ts';
-import data_for_filter from '../data_for_filters.json'
 import Sidebar from '../../../Components/Sidebar/Sidebar.tsx';
+import { useActivity } from '../../../Contexts/Activity_context.tsx/Activity_context.tsx';
 
 
 export const School_activity = () => {
-  const [subPage,setSubPage] = useState<string>("")
-  const[dataToVisualize,setDataToVisualize] = useState<{compiti: Array<typeof propsCompiti>,verifiche: Array<typeof propsVerifica>, lezioni: Array<typeof propsLezioni>}>()
-
-  useEffect(() => {
-        const fetchDataActivity = async () => {
-          const data = await fetch("https://randomuser.me/api", { // inserire url per attivita' scolastiche
-            method: "GET"
-          });
-          const jsonData = await data.json();
-          setDataToVisualize(jsonData.json)
-        };
-    
-        fetchDataActivity();
-      }, []);
+  const [subPage,setSubPage] = useState<'Lezioni' | 'Verifiche' | 'Compiti' | 'Personal' | ''>('')
+  const{state} = useActivity()
 
   return (
     <div id='complete-page'>
@@ -45,7 +32,7 @@ export const School_activity = () => {
         </div>
 
         <div id='verifiche'>
-          {dataToVisualize?.verifiche.map((element,elementIndex) => {
+          {state.list_verifiche.map((element,elementIndex) => {
               if(elementIndex < 5){
                 return <Box_activity data={element}/>
               }
@@ -58,7 +45,7 @@ export const School_activity = () => {
         </div>
 
         <div id='compiti'>
-          {dataToVisualize?.compiti.map((element,elementIndex) => {
+          {state.list_compiti.map((element,elementIndex) => {
               if(elementIndex < 5){
                 return <Box_activity data={element}/>
               }
@@ -72,7 +59,7 @@ export const School_activity = () => {
         </div>
 
         <div id='lezioni'>
-          {dataToVisualize?.lezioni.map((element,elementIndex) => {
+          {state.list_lezioni.map((element,elementIndex) => {
               if(elementIndex < 5){
                 return <Box_activity data={element}/>
               }
@@ -87,9 +74,8 @@ export const School_activity = () => {
       ): (
         <Sub_page
           argument={subPage}
-          propsSchema={subPage === "Lezioni" && propsLezioni || subPage === "Compiti" && propsCompiti || subPage === "Verifiche" && propsVerifica || undefined }
+          data={(subPage === 'Compiti' && state.list_compiti || subPage === 'Lezioni' && state.list_lezioni || subPage === 'Verifiche' && state.list_verifiche || undefined)}
           functionForReturn={setSubPage}
-          dataForFilters={JSON.parse(JSON.stringify((subPage === "Lezioni" && data_for_filter.lezioni || subPage === "Compiti" && data_for_filter.compiti || subPage === "Verifiche" && data_for_filter.verifiche || undefined )))}
         />
       )
     )}

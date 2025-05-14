@@ -50,7 +50,6 @@ export const Access_account = () => {
             password:dataValidate.data.password
           }
           setDataSignUp({...dataSignUp, personal_data:personalFormData})
-          //qua poi si dovra' chiamare la funzione per impostare un contesto con i dati dell'account
         }else{
           setErrorForm({isError:true,details:"L'email usata e' gia' registrata con un account"})
         }
