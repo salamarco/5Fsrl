@@ -2,7 +2,7 @@
     "log_in":[
         {
             "tag": "label",
-            "text": "inserisci email"
+            "text": "Inserisci email"
         },
         {
             "tag":"input",
@@ -11,7 +11,7 @@
         },
         {
             "tag":"label",
-            "text":"inserisci password"
+            "text":"Inserisci password"
         },
         {
             "tag":"input",
@@ -21,7 +21,7 @@
         {
             "tag":"button",
             "type":"submit",
-            "text_pre_submit":"Invia",
+            "text_pre_submit":"Sign in",
             "text_post_submit":"Verifica dati..."
         }
     ],
@@ -30,7 +30,7 @@
         "dati_personali": [
             {
                 "tag": "label",
-                "text": "inserisci email"
+                "text": "Inserisci email"
             },
             {
                 "tag":"input",
@@ -48,7 +48,7 @@
             },
             {
                 "tag":"label",
-                "text":"inserisci password"
+                "text":"Inserisci password"
             },
             {
                 "tag":"input",
@@ -58,7 +58,7 @@
             {
                 "tag":"button",
                 "type":"submit",
-                "text_pre_submit": "Avanti",
+                "text_pre_submit": "Continue",
                 "text_post_submit":"Verifica dati..."
             }
         ],

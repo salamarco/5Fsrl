@@ -1,10 +1,10 @@
 body {
-    background: linear-gradient(360deg, #f0f8ffd0, #e6f7ff, #d9f2ff);
+background: #ffffff;
+background: radial-gradient(circle, rgb(234, 238, 239) 0%, rgb(199, 224, 253) 100%);
     background-size: 200% 200%;
-    animation: gradientShift 6s ease infinite;
-    margin: 0;
-    padding: 0;
     background-repeat: no-repeat;
+    height: 100vh;
+    width: 100vw;
 }
 
 /* Gradient animation */

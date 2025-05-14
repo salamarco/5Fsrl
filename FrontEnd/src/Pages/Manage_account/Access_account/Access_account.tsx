@@ -6,6 +6,7 @@ import {z} from 'zod'
 import {verifyAccount,logInAccount,signUpAccount} from './functions_for_access.ts' 
 import { Link } from 'react-router';
 import { signUpData} from '../../../Interfaces_and_types/Manage_account/interfaces_and_types_for_access.ts';
+import './Access_account.css';
 import { useAuth} from '../../../Contexts/User_context/User_context.tsx';
 
 const defaultSignUpState: signUpData = {
@@ -99,6 +100,7 @@ export const Access_account = () => {
     }
   }
 
+
   return (
     <div id='accessPage'>
       {!state.isLoggedIn ? (
@@ -110,6 +112,7 @@ export const Access_account = () => {
           ))}
           {logIn ? (
             <div className='sign-in-module'> 
+              <h1>Welcome Back !</h1>
               <div className='data-form'>
                 <Form
                   method_http="post"
@@ -120,19 +123,22 @@ export const Access_account = () => {
                   <div>
                     {errorForm.details}
                   </div>
-                ))}
+                ))})
               </div>
               <div className='button-for-sign-up'>
                 <p> Non hai un account? </p>
-                <button onClick={()=> isLogIn(false)}>
+                <button onClick={()=> isLogIn(false)} className='buttonToForm'>
                     <FaArrowRight />
                 </button>
               </div>
+                         
             </div>
           ):(
           <div className='sign-up-module'>
             {isFirstPage ? (
               <div className='personal-data'>
+                <h1>Create Account</h1>
+                <div className='data-form'>
                 <Form
                   method_http="post"
                   data_fields={JSON.parse(JSON.stringify(definition_access_module.sign_up.dati_personali))} 
@@ -144,8 +150,8 @@ export const Access_account = () => {
                   </div>
                 ))}
               </div>
-              
-              ):(
+              </div>
+            ):(
               <div className='school-data'>
                 <Form
                   method_http="post"
@@ -161,11 +167,12 @@ export const Access_account = () => {
             )}
             <div className='button-for-log-in'>
               <p>Torna al Log in</p>
-              <button onClick={()=> isLogIn(true)}>
+              <button onClick={()=> isLogIn(true)} className='buttonToForm'>
                   <FaArrowLeft />
               </button>
             </div>
           </div>
+
           )}
         </div>
       ): (
