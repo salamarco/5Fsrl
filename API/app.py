@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify
 import mysql.connector
 from mysql.connector import Error
 from contextlib import contextmanager
+import bcrypt
 
 app = Flask(__name__)
 
@@ -35,15 +36,20 @@ def get_cursor(dictionary=False):
 # ENDPOINT /api/register
 # metodo: POST
 # metodo per la registrazione di un nuovo utente
-# parametri: username, email, password, nome, cognome
+# parametri: username, email, password, id classe nome, cognome
 # ritorno: [{'message'/'error' : 'dettagli'}, STATUS CODE]
 @app.route('/api/register', methods=['POST'])
 def userRegistration():
     data = request.json
     username = data.get('username')
     email = data.get('email')
-    password = data.get('password')
-    ## Inserire la presa dei dati scolastici dell'utente: classe e indirizzo
+
+    password = data.get('password').encode('UTF-8')
+    salt = bcrypt.gensalt()
+    password_hash = bcrypt.hashpw(password, salt)
+
+    id_classe = data.get('id_classe')
+    # da inserire id indirizzo (non ancora presente su DB)
     nome = data.get('nome')
     cognome = data.get('cognome')
 
@@ -59,10 +65,10 @@ def userRegistration():
                 return jsonify({'error': 'L\'email è già registrata'}), 400
 
             insert_query = """
-            INSERT INTO utenti (username, email, password, nome, cognome)
-            VALUES (%s, %s, %s, %s, %s)
+            INSERT INTO utenti (username, email, password, id_classe nome, cognome)
+            VALUES (%s, %s, %s, %s, %s, %s)
             """
-            cursor.execute(insert_query, (username, email, password, nome, cognome))
+            cursor.execute(insert_query, (username, email, password, id_classe, nome, cognome))
             return jsonify({'message': 'Utente registrato con successo'}), 201
     except Error as e:
         return jsonify({'error': str(e)}), 500
@@ -72,7 +78,19 @@ def userRegistration():
 # metodo: POST
 # metodo per il login di un utente
 # parametri: username, password
-# ritorno: [{'message'/'error' : 'dettagli'}, STATUS CODE]
+# ritorno: in caso di errori [{'error' : 'dettagli'}, STATUS CODE]
+# in caso di login corretto [
+#                               {
+#                                   'message' : 'dettagli',
+#                                   'user' : {            
+#                                       'username': 'bo',
+#                                       'email': 'email@gmail.com',
+#                                       'nome': 'gigi',
+#                                       'cognome': 'gigi'
+#                                    }
+#                               },
+#                               STATUS CODE
+#                            ]
 @app.route('/api/login', methods=['POST'])
 def userLogin():
     data = request.json
@@ -95,7 +113,7 @@ def userLogin():
             if result is None:
                 return jsonify({'error': 'Utente non trovato'}), 404
 
-            if result['password_hash'] == password:
+            if bcrypt.checkpw(password.encode('UTF-8'), result['password_hash']):
                 user_data = {
                     'username': result['username'],
                     'email': result['email'],
