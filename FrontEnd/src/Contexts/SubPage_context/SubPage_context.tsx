@@ -1,5 +1,5 @@
 import { createContext,useContext,useState } from 'react';
-import { subPageState } from '../../Interfaces_and_types/Activity/interfaces_and_types_for_data';
+import { subPageState } from '../../Interfaces_and_types/Activity/interfaces_for_activity';
 
 const initialState: subPageState = {
     modeToOpenBox: undefined,

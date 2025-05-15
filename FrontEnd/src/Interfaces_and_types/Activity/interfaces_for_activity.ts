@@ -14,6 +14,7 @@ export interface activityState{
 }
 
 export const propsVerifica = z.object({
+    id:z.number(),
     title:z.string(),
     date:z.string(),
     type_verifica:z.enum(["Scritta","Orale","Progetto"]),
@@ -21,33 +22,23 @@ export const propsVerifica = z.object({
 })
 
 export const propsCompiti = z.object({
+    id:z.number(),
     title:z.string(),
     date:z.string(),
     state:z.enum(['Da iniziare','In Corso','Completato']),
     priority:z.enum(['Alta','Media','Bassa'])
 })
 export const propsLezioni= z.object({
+    id:z.number(),
     materia:z.string(),
     date_start:z.string(),
     date_end:z.string(),
 })
 export const propsPersonal = z.object({
+    id:z.number(),
     title:z.string(),
     date_start:z.string(),
-    sate_end:z.string(),
+    date_end:z.string(),
     description:z.string(),
     type:z.array(z.string())
 })
-
-export const filterData = z.object({
-    title:z.string(),
-    name: z.string(),
-    options:z.array(z.object({value:z.string(),title:z.string()}))
-})
-
-export interface dataFromFilterJSON {
-    Verifiche: Array<typeof filterData>,
-    Lezioni: Array<typeof filterData>,
-    Compiti: Array<typeof filterData>,
-    Personal: Array<typeof filterData>,
-}

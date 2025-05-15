@@ -1,0 +1,170 @@
+{
+    "Lezioni": [
+        {
+        "data_tag": {
+            "tag": "label",
+            "text": "Materia"
+        }
+        },
+        {
+        "key": "materia",
+        "tag": "p"
+        },
+        {
+        "data_tag": {
+            "tag": "label",
+            "text": "Data inizio"
+        }
+        },
+        {
+            "key": "date_start",
+            "tag":"p"
+        },
+        {
+        "data_tag": {
+            "tag": "label",
+            "text": "Data fine"
+        }  
+        },
+        {
+            "key": "date_end",
+            "tag":"p"
+        }
+    ],
+    "Compiti": [
+        {
+        "data_tag": {
+            "tag": "label",
+            "text": "Titolo"
+        }
+        },
+        {
+        "key": "title",
+        "tag": "p"
+        },
+        {
+        "data_tag": {
+           "tag": "label",
+            "text": "Data"
+        }
+        },
+        {
+            "key": "date",
+            "tag":"p"
+        },
+        {
+        "data_tag": {
+            "tag": "label",
+            "text": "Stato"
+        }
+        },
+        {
+            "key": "state",
+            "tag":"p"
+        },
+        {
+        "data_tag": {
+            "tag": "label",
+            "text": "Priorità"
+        }
+        },
+        {
+            "key": "priority",
+            "tag":"p"
+        }
+    ],
+    "Verifiche": [
+        {
+        "data_tag": {
+            "tag": "label",
+            "text": "Titolo"
+        }
+        },
+        {
+        "key": "title",
+        "tag": "p"
+        },
+        {
+        "data_tag": {
+            "tag": "label",
+            "text": "Data"
+        }
+        },
+        {
+            "key": "date",
+            "tag":"p"
+        },
+        {
+        "data_tag": {
+            "tag": "label",
+            "text": "Tipo verifica"
+        }
+        },
+        {
+            "key": "type_verifica",
+            "tag":"p"
+        },
+        {
+        "data_tag": {
+            "tag": "label",
+            "text": "Descrizione"
+        }
+        },
+        {
+            "key": "description",
+            "tag":"p"
+        }
+    ],
+    "Personal":[
+        {
+        "data_tag": {
+            "tag": "label",
+            "text": "Titolo"
+        }
+        },
+        {
+        "key": "title",
+        "tag": "p"
+        },
+        {
+        "data_tag": {
+            "tag": "label",
+            "text": "Data inizio"
+        }
+        },
+        {
+            "key": "date_start",
+            "tag":"p"
+        },
+        {
+        "data_tag": {
+            "tag": "label",
+            "text": "Data fine"
+        }  
+        },
+        {
+            "key": "date_end",
+            "tag":"p"
+        },
+        {
+        "data_tag": {
+            "tag": "label",
+            "text": "Descrizione"
+        }
+        },
+        {
+            "key": "description",
+            "tag":"p"
+        },
+        {
+        "data_tag":{
+            "tag": "label",
+            "text": "Tipo attività"
+        }
+        },
+        {
+            "key": "type",
+            "tag":"p"
+        }
+    ]
+}

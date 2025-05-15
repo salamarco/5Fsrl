@@ -33,9 +33,6 @@ export const Dashboard = () => {
           </div>
         </div>
         <div id='main-part'>
-          <div id='sidebar'>
-            <Sidebar />
-          </div>
           <div id='calendar'>
 
           </div>

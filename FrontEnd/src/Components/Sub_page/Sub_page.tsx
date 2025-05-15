@@ -1,10 +1,11 @@
 import Filters from '../Component_for_data/Filters/Filters';
 import Box_activity from '../Boxes/Box_activity/Box_activity';
 import { useState} from 'react';
-import { propsCompiti,propsLezioni,propsPersonal,propsVerifica,filterData,dataFromFilterJSON} from '../../Interfaces_and_types/Activity/interfaces_and_types_for_data';
+import { propsCompiti,propsLezioni,propsPersonal,propsVerifica} from '../../Interfaces_and_types/Activity/interfaces_for_activity';
+import { filterData,dataFromFilterJSON } from '../../Interfaces_and_types/Activity/interfaces_for_definition';
 import Typing_text from '../Component_for_text/Typing_text';
 import { FaArrowLeft } from "react-icons/fa6";
-import data_for_filters from '../../Pages/Activity/data_for_filters.json'
+import data_for_filters from '../../Pages/Activity/Filter_activity_defintion.json'
 import { useSubPage } from '../../Contexts/SubPage_context/SubPage_context';
 import Modal from '../Modal/Modal';
 import { IoAddCircleOutline } from "react-icons/io5";
@@ -79,6 +80,7 @@ export const Sub_page: React.FC<subPage_props> = ({data,argument,functionForRetu
                       if (String(propertyValue) === String(valueFilter.value)) {
                         return (
                           <Box_activity
+                            argumentActivity={(argument !== '' ? argument : undefined)}
                             key={elementIndex}
                             data={element}
                           />

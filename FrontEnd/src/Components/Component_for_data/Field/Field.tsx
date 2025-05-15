@@ -4,13 +4,15 @@ interface field_props{
     element: dataElement;
     elementIndex: number
     state_disabled?: boolean
+    children_p?: string,
 }
 
-export const Field: React.FC<field_props> = ({element,elementIndex,state_disabled}) => {
+export const Field: React.FC<field_props> = ({element,elementIndex,state_disabled,children_p}) => {
 
   const renderTag = () => {
-    const TagName = element.tag;
-    const props: {[key:string]:string | number | boolean | {(value:string) : void} } = {
+
+    const TagName: 'p' | 'label' | 'button' | 'input' | 'button' | 'select'= element.tag;
+    const props: {[key:string]:string | number | boolean | {(value:string) : void} } | undefined = {
       ...(element.name && {name: element.name}),
       ...(element.type && {type:element.type}),
       ...(TagName === "input" && {required:true}),
@@ -19,9 +21,10 @@ export const Field: React.FC<field_props> = ({element,elementIndex,state_disable
     const children: string | undefined = (
       TagName === "label" && element.text || 
       TagName === "button" && (state_disabled ? element.text_post_submit : element.text_pre_submit) ||
+      TagName === "p" && (children_p ? children_p : undefined) ||
       undefined
     )
-    
+
     return (<TagName key = {elementIndex} {...props}>{children}</TagName>)
   }
 
