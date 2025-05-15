@@ -4,6 +4,7 @@
     color: white;
     padding: 20px 0;
     text-align: center;
+    width: 100%;
 
 }
 
@@ -22,8 +23,8 @@ ul {
     align-items: center; /* Allinea verticalmente l'icona e il link al centro */
   }
   
-  .link-section ul div svg, /* Se FaLink e BsGithub sono componenti SVG */
-  .link-section ul div i { /* Se FaLink e BsGithub sono icon font (es. Font Awesome) */
+  .link-section ul div svg, 
+  .link-section ul div i { 
     margin-right: 10px;
     font-size: 2em; /* Aggiunge uno spazio tra l'icona e il link */
   }
@@ -31,7 +32,7 @@ ul {
   .link-section ul li {
     font-size: 1.1em;
     list-style-type: none; /* Rimuove i pallini predefiniti della lista */
-    margin: 5px 0; /* Aggiunge un po' di spazio verticale tra gli elementi della lista */
+    margin: 5px 0; /* Aggiunge spazio verticale tra gli elementi della lista */
   }
 
 .logo5F_bianco{
