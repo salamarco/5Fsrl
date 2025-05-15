@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify
 import mysql.connector
 from mysql.connector import Error
 from contextlib import contextmanager
+import bcrypt
 
 app = Flask(__name__)
 
@@ -32,37 +33,77 @@ def get_cursor(dictionary=False):
             conn.close()
 
 
+def email_exists(email):
+    try:
+        with get_cursor() as cursor:
+            query = """
+                    SELECT COUNT(*)
+                    FROM utenti
+                    WHERE email = %s
+            """
+            cursor.execute(query, (email))
+            exists = cursor.fetchone()[0]
+
+            return exists > 0
+
+    except Error as e:
+        return True
+    
+
+def username_exists(username):
+    try:
+        with get_cursor() as cursor:
+            query = """
+                    SELECT COUNT(*)
+                    FROM utenti
+                    WHERE username = %s
+            """
+            cursor.execute(query, (username))
+            exists = cursor.fetchone()[0]
+
+            return exists > 0
+
+    except Error as e:
+        return True
+
+
 # ENDPOINT /api/register
 # metodo: POST
+# TO DO: suddividere in più endpoint (prima informazioni essenziali e poi scolastiche)
 # metodo per la registrazione di un nuovo utente
-# parametri: username, email, password, nome, cognome
+# parametri: username, email, password, id classe nome, cognome
 # ritorno: [{'message'/'error' : 'dettagli'}, STATUS CODE]
 @app.route('/api/register', methods=['POST'])
 def userRegistration():
     data = request.json
     username = data.get('username')
     email = data.get('email')
-    password = data.get('password')
-    ## Inserire la presa dei dati scolastici dell'utente: classe e indirizzo
+
+    password = data.get('password').encode('UTF-8')
+    salt = bcrypt.gensalt()
+    password_hash = bcrypt.hashpw(password, salt)
+
+    id_classe = data.get('id_classe')
+    # da inserire id indirizzo (non ancora presente su DB)
     nome = data.get('nome')
     cognome = data.get('cognome')
 
     if not username or not password or not nome or not cognome:
         return jsonify({'error': 'Dati mancanti'}), 400
+    
+    if email_exists(email):
+        return jsonify({'error': 'L\'email è già registrata'}), 400
+
+    if username_exists(username):
+        return jsonify({'error': 'Username già registrato'}), 400
 
     try:
         with get_cursor() as cursor:
-            cursor.execute("SELECT COUNT(*) FROM utenti WHERE email = %s", (email,))
-            email_exists = cursor.fetchone()[0]
-
-            if email_exists > 0:
-                return jsonify({'error': 'L\'email è già registrata'}), 400
-
             insert_query = """
-            INSERT INTO utenti (username, email, password, nome, cognome)
-            VALUES (%s, %s, %s, %s, %s)
+            INSERT INTO utenti (username, email, password, id_classe nome, cognome)
+            VALUES (%s, %s, %s, %s, %s, %s)
             """
-            cursor.execute(insert_query, (username, email, password, nome, cognome))
+            cursor.execute(insert_query, (username, email, password, id_classe, nome, cognome))
             return jsonify({'message': 'Utente registrato con successo'}), 201
     except Error as e:
         return jsonify({'error': str(e)}), 500
@@ -72,7 +113,21 @@ def userRegistration():
 # metodo: POST
 # metodo per il login di un utente
 # parametri: username, password
-# ritorno: [{'message'/'error' : 'dettagli'}, STATUS CODE]
+# ritorno: in caso di errori [{'error' : 'dettagli'}, STATUS CODE]
+# in caso di login corretto [
+#                               {
+#                                   'message' : 'dettagli',
+#                                   'user' : {            
+#                                       'username': 'bo',
+#                                       'email': 'email@gmail.com',
+#                                       'nome': 'gigi',
+#                                       'cognome': 'gigi',
+#                                       'id_classe': 1
+#                                       <da aggiungere indirizzo>
+#                                    }
+#                               },
+#                               STATUS CODE
+#                            ]
 @app.route('/api/login', methods=['POST'])
 def userLogin():
     data = request.json
@@ -85,7 +140,7 @@ def userLogin():
     try:
         with get_cursor(dictionary=True) as cursor:
             query = """
-            SELECT username, email, nome, cognome, password_hash
+            SELECT *
             FROM utenti
             WHERE username = %s
             """
@@ -95,12 +150,14 @@ def userLogin():
             if result is None:
                 return jsonify({'error': 'Utente non trovato'}), 404
 
-            if result['password_hash'] == password:
+            if bcrypt.checkpw(password.encode('UTF-8'), result['password_hash']):
                 user_data = {
                     'username': result['username'],
                     'email': result['email'],
                     'nome': result['nome'],
-                    'cognome': result['cognome']
+                    'cognome': result['cognome'],
+                    'id_classe': result['id_classe']
+                    # da aggiungere indirizzo (non ancora salvato nel DB)
                 }
                 return jsonify({'message': 'Login effettuato con successo', 'user': user_data}), 200
             else:
