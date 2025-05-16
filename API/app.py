@@ -239,7 +239,7 @@ def getSchoolList():
         return jsonify({'error': str(e)}), 500
 
 
-# DA QUI IN POI TUTTO DA SISTEMARE (full generato ma almeno ho una base)
+# DA QUI IN POI TUTTO DA SISTEMARE! (full generato ma almeno ho una base)
 
 def get_current_user_email():
     ...
