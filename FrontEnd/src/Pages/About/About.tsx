@@ -11,7 +11,12 @@ const about = () => {
             </div>
             <h1>About Us</h1>
             <p>Welcome to the About page!</p>
-            <Footer />
+
+            <div className='footer-section'>
+                <Footer />
+
+            </div>
+            
         </div>
     );
 };

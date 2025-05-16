@@ -1,9 +1,20 @@
 
-.main-section-func{
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
+
+.subtext-functionality{
+  margin-top: 0;
 }
+
+.main-section-func{
+    display: grid;
+    flex-direction:row ;
+    padding-left: 10px;
+    margin-top: 20px;
+    padding-top: 30px;
+    
+
+}
+
+
 
 .logo5F{
     display: flex;
