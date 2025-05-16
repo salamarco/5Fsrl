@@ -25,7 +25,7 @@ export interface dataSelect{
 }
 
 export interface dataElement{
-  tag: "label" | "button" | "select" | "input" // tag che deve essere visualizzato
+  tag: "label" | "button" | "select" | "input" | "p"// tag che deve essere visualizzato
   text?: string; //testo che deve essere inserito in una label
   name?: string; //name del tag specifico
   type?: "submit" | "text"

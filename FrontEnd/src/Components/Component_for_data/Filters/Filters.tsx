@@ -1,5 +1,5 @@
 import React from 'react';
-import {filterData} from '../../../Interfaces_and_types/Activity/interfaces_and_types_for_data'
+import {filterData} from '../../../Interfaces_and_types/Activity/interfaces_for_activity'
 
 
 interface filtersProps{

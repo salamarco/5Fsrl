@@ -1,5 +1,5 @@
 {
-    "verifiche":[{
+    "Verifiche":[{
         "title": "",
         "name":"",
         "options":[{
@@ -8,7 +8,7 @@
         }]
 
     }],
-    "lezioni": [{
+    "Lezioni": [{
         "title": "",
         "name":"",
         "options":[{
@@ -17,7 +17,7 @@
         }]
 
     }],
-    "compiti": [{
+    "Compiti": [{
         "title": "",
         "name":"",
         "options":[{
@@ -26,7 +26,7 @@
         }]
 
     }],
-    "personal":[{
+    "Personal":[{
         "title": "",
         "name":"",
         "options":[{

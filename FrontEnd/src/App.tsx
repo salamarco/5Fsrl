@@ -9,6 +9,7 @@ import Help from "./Pages/Help/Help.tsx"
 import Page_account from './Pages/Manage_account/Page_account/Page_account.tsx'
 import { useEffect, useState } from "react";
 import { AuthProvider } from './Contexts/User_context/User_context.tsx'
+import { ActivityProvider } from './Contexts/Activity_context.tsx/Activity_context.tsx'
 
 function App() {
 
@@ -33,18 +34,20 @@ function App() {
   return (
    <div>
       <AuthProvider>
-        <BrowserRouter>
-          <Routes>
-            <Route path="/AccessPage" element={<Access_account />} />
-            <Route path="/ManageAccount" element={<Page_account />} />
-            <Route path="/" element={<Homepage isDone={done}/>} />
-            <Route path="/Dashboard" element= {<Dashboard/>} />
-            <Route path="/PersonalActivity" element= {<Personal_activity/>} />
-            <Route path="/SchoolActivity" element= {<School_activity/>} />
-            <Route path="/About" element={<About />} />
-            <Route path="/Help" element={<Help />} />
-          </Routes>
-        </BrowserRouter>
+        <ActivityProvider>
+          <BrowserRouter>
+            <Routes>
+              <Route path="/AccessPage" element={<Access_account />} />
+              <Route path="/ManageAccount" element={<Page_account />} />
+              <Route path="/" element={<Homepage isDone={done}/>} />
+              <Route path="/Dashboard" element= {<Dashboard/>} />
+              <Route path="/PersonalActivity" element= {<Personal_activity/>} />
+              <Route path="/SchoolActivity" element= {<School_activity/>} />
+              <Route path="/About" element={<About />} />
+              <Route path="/Help" element={<Help />} />
+            </Routes>
+          </BrowserRouter>
+        </ActivityProvider>
       </AuthProvider>
    </div>
   )

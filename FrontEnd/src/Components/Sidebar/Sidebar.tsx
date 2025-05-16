@@ -18,33 +18,33 @@ export const Sidebar = () => {
       <div id='dashboard'>
         <Link to="/DashBoard">
           <button>
-            ({isActive("/DashBoard")} ? 
+            {isActive("/DashBoard") ? (
               <FaCalendarAlt />
             ):(
               <FaRegCalendarAlt />
-            )
+            )}
           </button>
         </Link>
       </div>
       <div id='school'>
-        <Link to="/PersonalActivity">
+        <Link to="/SchoolActivity">
           <button>
-            ({isActive("PersonalActivity")} ? 
+            {isActive("/SchoolActivity") ? ( 
               <IoSchool />
             ):(
               <IoSchoolOutline />
-            )
+            )}
           </button>
         </Link>
       </div>
       <div id='dashboard'>
-        <Link to="SchoolActivity">
+        <Link to="/PersonalActivity">
           <button>
-            ({isActive("SchoolActivity")} ? 
+            {isActive("/PersonalActivity") ? (
               <IoMap />
             ):(
               <IoMapOutline />
-            )
+            )}
           </button>
         </Link>
       </div>
