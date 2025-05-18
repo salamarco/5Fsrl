@@ -33,17 +33,22 @@ Questa applicazione è infine utile per aziende che desiderano organizzare al me
    git clone https://github.com/tuo-utente/5Fsrl.git
 
 2. Accedi alla cartella del progetto:
+    ```sh
     cd 5Fsrl/Frontend
 
 3. Installa le dipendenze (node modules)
+    ```sh
     npm install | yarn install
 
 4. Avvio dell'applicazione
+    ```sh
     npm run dev | yarn run dev
 
 ### Disponibilità
 
-L'applicazione sarà disponibile su http://localhost:3000
+L'applicazione sarà disponibile su 
+```sh
+http://localhost:3000
 
 ### Contributi
 Sono benvenuti suggerimenti e contributi! Apri una issue o una pull request per proporre miglioramenti o segnalare problemi.
