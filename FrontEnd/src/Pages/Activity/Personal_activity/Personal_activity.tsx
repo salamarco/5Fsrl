@@ -3,7 +3,7 @@ import Box_activity from '../../../Components/Boxes/Box_activity/Box_activity';
 import Typing_text from '../../../Components/Component_for_text/Typing_text';
 import Sub_page from '../../../Components/Sub_page/Sub_page';
 import { useState} from 'react';
-import { FaCirclePlus } from "react-icons/fa6";
+import { FaArrowDown } from "react-icons/fa6";
 import Sidebar from '../../../Components/Sidebar/Sidebar';
 import { useActivity } from '../../../Contexts/Activity_context.tsx/Activity_context';
 import {SubPageProvider} from '../../../Contexts/SubPage_context/SubPage_context.tsx'
@@ -35,12 +35,17 @@ export const Personal_activity = () => {
           <div id='attività'>
               {state.list_personali.map((element,elementIndex) => {
                 if(elementIndex < 5){
-                  return <Box_activity data={element}/>
+                  return (
+                  <Box_activity
+                    argumentActivity='Personal'
+                    data={element}
+                    />
+                  )
                 }
               })}
             <div id='button-for-page'>
               <button onClick={() => setIsSubPage("Personal")}>
-                <FaCirclePlus />
+                <FaArrowDown />
               </button>
             </div>
           </div>

@@ -1,7 +1,7 @@
 import Box_activity from '../../../Components/Boxes/Box_activity/Box_activity.tsx';
 import Box_highlights from '../../../Components/Boxes/Box_highlights/Box_highlights.tsx';
 import Typing_text from '../../../Components/Component_for_text/Typing_text.tsx';
-import { FaCirclePlus } from "react-icons/fa6";
+import { FaArrowDown } from "react-icons/fa6";
 import { useState} from 'react';
 import Sub_page from '../../../Components/Sub_page/Sub_page.tsx';
 import Sidebar from '../../../Components/Sidebar/Sidebar.tsx';
@@ -15,7 +15,7 @@ export const School_activity = () => {
   return (
     <div id='complete-page'>
       <div className='sidebar'>
-            <Sidebar />
+        <Sidebar />
       </div>
       {(subPage === "" ? (
         <div id='school-activity'>
@@ -34,12 +34,17 @@ export const School_activity = () => {
         <div id='verifiche'>
           {state.list_verifiche.map((element,elementIndex) => {
               if(elementIndex < 5){
-                return <Box_activity data={element}/>
+                return (
+                <Box_activity
+                  argumentActivity='Verifiche'
+                  data={element}
+                />
+                )
               }
           })}
           <div id='button-for-page'>
               <button onClick={() => setSubPage("Verifiche")}>
-                <FaCirclePlus />
+                <FaArrowDown />
               </button>
           </div>
         </div>
@@ -47,13 +52,17 @@ export const School_activity = () => {
         <div id='compiti'>
           {state.list_compiti.map((element,elementIndex) => {
               if(elementIndex < 5){
-                return <Box_activity data={element}/>
+                return (
+                <Box_activity 
+                  argumentActivity='Compiti'
+                  data={element}/>
+                )
               }
           })}
 
           <div id='button-for-page'>
               <button onClick={() => setSubPage("Compiti")}>
-                <FaCirclePlus />
+                <FaArrowDown />
               </button>
           </div>
         </div>
@@ -61,12 +70,17 @@ export const School_activity = () => {
         <div id='lezioni'>
           {state.list_lezioni.map((element,elementIndex) => {
               if(elementIndex < 5){
-                return <Box_activity data={element}/>
+                return (
+                <Box_activity 
+                  data={element}
+                  argumentActivity='Lezioni'
+                />
+                )
               }
           })}
           <div id='button-for-page'>
               <button onClick={() => setSubPage("Lezioni")}>
-                <FaCirclePlus />
+                <FaArrowDown/>
               </button>
           </div>
         </div>

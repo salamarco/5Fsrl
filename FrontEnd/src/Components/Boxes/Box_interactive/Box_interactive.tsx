@@ -1,6 +1,7 @@
 import React from 'react';
 import { useState } from 'react';
 import {motion,AnimatePresence} from 'motion/react'
+import './Box_interactive.css';
 
 interface Interactive_box_props{
   title: string;
