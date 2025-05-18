@@ -123,7 +123,7 @@ export const Access_account = () => {
                   <div>
                     {errorForm.details}
                   </div>
-                ))})
+                ))}
               </div>
               <div className='button-for-sign-up'>
                 <p> Non hai un account? </p>

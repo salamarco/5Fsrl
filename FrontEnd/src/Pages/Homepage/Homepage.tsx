@@ -39,7 +39,8 @@ const Homepage: React.FC<props_homepage> = ({isDone}) => {
                         </Link>
                     </div>
                     <div className='functionality-section'>
-                        <div className='Title'> <h3> Functionality </h3></div>
+
+                        <div className='Title'> <h3> Features </h3></div>
                         <div className='main-section-func'>
                             {Data_boxes.data.map((data,dataIndex) => (
                                 <Box_interactive 
@@ -49,10 +50,7 @@ const Homepage: React.FC<props_homepage> = ({isDone}) => {
                                 className = {data.styling}
                                 />
                             ))}
-                        </div>
-                        <div className='subtext-functionality'> 
-                            <p>Migliora la tua organizzazione degli impegni per goderti un migliore e più lungo tempo libero</p>
-                        </div>
+                       </div>
                     </div>
                 </div>
                 <div className='footer-section'>
@@ -83,13 +81,9 @@ const Homepage: React.FC<props_homepage> = ({isDone}) => {
                             </button>
                         </Link>
                     </div>
-
-                    <div className='subtext-functionality'> 
-                        <p>Migliora la tua organizzazione degli impegni per goderti un migliore e più lungo tempo libero</p>
-                    </div>
                 </div>
-                <div className='functionality-section'>
-                    <div className='Title'> <h3> Functionality </h3></div>
+                <div className='functionality-section-1'>
+                    <div className='Title'> <h3> Features </h3></div>
                     <div className='main-section-func'>
                         {Data_boxes.data.map((data,dataIndex) => (
                             <Box_interactive 

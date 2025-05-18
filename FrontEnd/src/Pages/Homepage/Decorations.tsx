@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import logo from '../../assets/logo5F.png'
+import logo from '../../assets/5fsrl_logo_def.png'
 import './Homepage.css'
 
 const colors = ['#0a1f44', '#236ab9', '#b3d9ff'];
