@@ -46,8 +46,7 @@ Questa applicazione è infine utile per aziende che desiderano organizzare al me
 
 ### Disponibilità
 
-L'applicazione sarà disponibile su 
-    ```sh 
+- L'applicazione sarà disponibile su 
     http://localhost:3000 
 
 ### Contributi
