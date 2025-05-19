@@ -3,6 +3,7 @@ import Typing_text from '../../Components/Component_for_text/Typing_text';
 import { useAuth } from '../../Contexts/User_context/User_context.tsx';
 import { useActivity } from '../../Contexts/Activity_context.tsx/Activity_context.tsx';
 import { useEffect } from 'react';
+import Calendar from '../../Components/Calendar/Calendar.tsx';
 
 
 export const Dashboard = () => {
@@ -19,7 +20,7 @@ export const Dashboard = () => {
         };
         fetchDataActivity();
   
-      }, [setState]);
+      }, [])  ;
   return (
     <div>
       <div className='sidebar'>
@@ -34,6 +35,8 @@ export const Dashboard = () => {
         </div>
         <div id='main-part'>
           <div id='calendar'>
+            
+            <Calendar />
 
           </div>
         </div>

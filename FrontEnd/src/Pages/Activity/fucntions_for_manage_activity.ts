@@ -11,3 +11,7 @@ export const functionForDeleteActivity: () => void = () => {
 export const functionForEditActivity: () => void = () => {
 
 }
+
+export const functionForAddActivity: () => void = () => {
+    
+}
