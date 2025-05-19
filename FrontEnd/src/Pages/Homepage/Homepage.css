@@ -1,15 +1,66 @@
-
 .main-section-func{
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); 
+  height: 40vh;
+  margin-top: 50px;
+  margin-bottom: 80px;
 }
+
+.calendar, .school, .personal, .statistics{
+  display: flex;
+  background: linear-gradient(90deg, #f0f5fa, #f3f8fc);
+  width: 80%;
+  margin-left: 10%;
+  height: 35vh;
+  border-radius: 70px;
+  box-shadow: 10px 8px 25px rgba(0, 0, 0, 0.1);
+  color: rgba(0, 0, 255, 1);
+  font-family: "Montserrat", sans-serif;
+  font-weight: 500;
+  font-style: normal;
+  font-size: 16px;
+
+}
+
+.calendar:hover, .school:hover, .personal:hover, .statistics:hover{
+  background: linear-gradient(90deg, #f3f8fc, #f0f5fa);
+  transform: scale(1.05);
+  transition: all 0.3s ease;
+}
+
+.Title{
+    display: flex;
+    justify-content: center;
+    font-family: "Montserrat", sans-serif;
+    font-weight: 500;
+    font-size: 30px;
+    color: #0b1d87; 
+    font-weight: bolder;  
+    margin-top: 80px;
+}
+
+.functionality-section-1{
+    opacity: 0;
+    animation: goUpFuncSect 2s ease-out 2s forwards;
+}
+
+@keyframes goUpFuncSect {
+    from {
+      opacity: 0;
+      transform: translateY(100px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
 
 .logo5F{
     display: flex;
     margin: 0 auto;
-    width: 500px;
-    height: 500px;
+    width: 450px;
+    height: 450px;
     margin-top:10%;
     animation: riseUp 1s ease-out 1.5s forwards;
 }
@@ -97,7 +148,7 @@
   padding: 15px;
   text-align: center;
   justify-content: center;  
-  margin-top: -70px;
+  margin-top: -30px;
   animation: up 1s ease-out 1.5s forwards, animate 2s ease-out 2s forwards;
   font-family: "Montserrat", sans-serif;
   font-weight: 400;

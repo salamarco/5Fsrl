@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS Materie(
 CREATE TABLE IF NOT EXISTS Scuole(
     id_scuola INT AUTO_INCREMENT,
     nome_scuola VARCHAR() NOT NULL UNIQUE,
-    n_scuola INT NOT NULL,
+    numero_anni INT NOT NULL,
     
     PRIMARY KEY(id_scuola)
 );

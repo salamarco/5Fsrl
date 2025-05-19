@@ -14,7 +14,7 @@ export const Box_interactive: React.FC<Interactive_box_props> = ({title,sub_text
   const contentVariants = {
     initial: { opacity: 0, y: 10 }, // Stato iniziale (leggermente spostato e trasparente)
     animate: { opacity: 1, y: 0 },   // Stato visibile (opaco e in posizione)
-    exit: { opacity: 0, y: -10 },   // Stato d'uscita (leggermente spostato e trasparente)
+    exit: { opacity: 0, y: -30 },   // Stato d'uscita (leggermente spostato e trasparente)
   };
 
   return (
@@ -34,7 +34,7 @@ export const Box_interactive: React.FC<Interactive_box_props> = ({title,sub_text
             animate="animate"
             exit="exit"
             transition={{ duration: 0.3, ease: 'easeInOut' }}
-            style={{ position: 'absolute', top: '50%', left: '50%', x: '-50%', y:'-50%' }} // Centratura
+            style={{ position: 'absolute', top: '45%', left: '50%', x: '-50%', y:'-50%' }} // Centratura
             >
               {title}
             </motion.h2>
@@ -47,7 +47,7 @@ export const Box_interactive: React.FC<Interactive_box_props> = ({title,sub_text
             animate="animate"
             exit="exit"
             transition={{ duration: 0.3, ease: 'easeInOut' }}
-            style={{ position: 'absolute', top: '50%', left: '50%', x: '-50%', y:'-50%' }} // Centratura
+            style={{position: 'absolute', top:'30%', left:'10%', transform: 'translate(-50%, -50%)', width: '80%', textAlign: 'center', color: '#0b1d87', boxSizing: 'border-box'}} // Centratura
           >
             {sub_text}
           </motion.p>

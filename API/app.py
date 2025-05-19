@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, session
 import mysql.connector
 from mysql.connector import Error
 from contextlib import contextmanager
@@ -6,6 +6,11 @@ import bcrypt
 
 app = Flask(__name__)
 
+# -----------------------------------------------------------------------------------------------
+# CONFIGURAZIONE DB
+# -----------------------------------------------------------------------------------------------
+
+# parametri utili alla connessione al DB
 db_config = {
     'host': 'localhost',
     'user': 'root',
@@ -14,7 +19,7 @@ db_config = {
 }
 
 
-# Context manager per gestione connessione/cursore
+# Context manager per gestione connessione al DB/cursore per interagire
 @contextmanager
 def get_cursor(dictionary=False):
     conn = None
@@ -33,6 +38,28 @@ def get_cursor(dictionary=False):
             conn.close()
 
 
+# -----------------------------------------------------------------------------------------------
+
+# Tupla contenente tutti i colori consentiti per gli eventi personali
+# (stessi del DB ma un controllo in più non fa mai male)
+# viene utilizzato nelle varie API per verificare se il colore
+# indicato dall'utente è valido
+ALLOWED_COLORS_TIPOLOGIE = ('#ab7050','#ed8d2d','#dec735','#19a850','#1e5eba','#e6443c','#b04a84','#7542a8')
+
+
+# -----------------------------------------------------------------------------------------------
+# FUNZIONI AUSILIARIE:
+# -----------------------------------------------------------------------------------------------
+
+# Funzione classica di selezione dal DB in cui si cerca un valore specifico
+# Poichè è un operazione che avviene spesso, veniva più comodo e veloce renderla una funzione
+def fetch_item_by_id(cursor, table_name, id_column_name, item_id, user_email):
+    query = f"SELECT * FROM {table_name} WHERE {id_column_name} = %s AND email = %s"
+    cursor.execute(query, (item_id, user_email))
+    return cursor.fetchone()
+
+
+# Verifica esistenza email
 def email_exists(email):
     try:
         with get_cursor() as cursor:
@@ -47,9 +74,10 @@ def email_exists(email):
             return exists > 0
 
     except Error as e:
-        return True
+        return True # in caso di errore meglio segnare che esiste già per evitare problemi
     
 
+# Verifica esistenza username
 def username_exists(username):
     try:
         with get_cursor() as cursor:
@@ -65,30 +93,50 @@ def username_exists(username):
 
     except Error as e:
         return True
+    
 
+# Funzione per ottenere l'email dell'utente loggato (utile alle altre API)
+# Per quanto sia una sola riga di codice, è stato deciso di farne una funzione
+# in modo tale da poter cambiare eventualmente il modo in cui viene recuperata
+# l'email modificando solamente questa funzione, dato che viene chiamata
+# parecchie volte all'interno del codice
+def get_current_user_email():
+    return session.get("user_email")
+
+
+# -----------------------------------------------------------------------------------------------
+# TUTTE LE API:
+# Ogni funzione indica il comportamento di un determinato endpoint
+# a seconda del metodo http utilizzato nella chiamata
+# I PARAMETRI di base vanno passati come JSON nella richiesta
+# (tranne se diversamente specificato nel commento sopra alla funzione,
+# ad esempio in alcuni casi i parametri possono essere passati tramite query string nell'URL)
+# IL RITORNO è un JSON che può contenere l'esito di determinate operazioni
+# oppure dei dati, in base alla funzione
+# -----------------------------------------------------------------------------------------------
+
+
+# === API GENERICHE ===
 
 # ENDPOINT /api/register
 # metodo: POST
 # TO DO: suddividere in più endpoint (prima informazioni essenziali e poi scolastiche)
 # metodo per la registrazione di un nuovo utente
-# parametri: username, email, password, id classe nome, cognome
+# parametri: username, email, password, id_classe, id_indirizzo, anno_scuola
 # ritorno: [{'message'/'error' : 'dettagli'}, STATUS CODE]
 @app.route('/api/register', methods=['POST'])
 def userRegistration():
     data = request.json
     username = data.get('username')
     email = data.get('email')
+    id_indirizzo = data.get('id_indirizzo')
+    anno_scuola = data.get('anno_scuola')
 
     password = data.get('password').encode('UTF-8')
     salt = bcrypt.gensalt()
     password_hash = bcrypt.hashpw(password, salt)
 
-    id_classe = data.get('id_classe')
-    # da inserire id indirizzo (non ancora presente su DB)
-    nome = data.get('nome')
-    cognome = data.get('cognome')
-
-    if not username or not password or not nome or not cognome:
+    if not username or not password_hash or not email or not id_indirizzo or not anno_scuola:
         return jsonify({'error': 'Dati mancanti'}), 400
     
     if email_exists(email):
@@ -100,10 +148,10 @@ def userRegistration():
     try:
         with get_cursor() as cursor:
             insert_query = """
-            INSERT INTO utenti (username, email, password, id_classe nome, cognome)
-            VALUES (%s, %s, %s, %s, %s, %s)
+            INSERT INTO utenti (username, email, password_hash, id_indirizzo, anno_scuola)
+            VALUES (%s, %s, %s, %s, %s)
             """
-            cursor.execute(insert_query, (username, email, password, id_classe, nome, cognome))
+            cursor.execute(insert_query, (username, email, password_hash, id_indirizzo, anno_scuola))
             return jsonify({'message': 'Utente registrato con successo'}), 201
     except Error as e:
         return jsonify({'error': str(e)}), 500
@@ -120,10 +168,8 @@ def userRegistration():
 #                                   'user' : {            
 #                                       'username': 'bo',
 #                                       'email': 'email@gmail.com',
-#                                       'nome': 'gigi',
-#                                       'cognome': 'gigi',
-#                                       'id_classe': 1
-#                                       <da aggiungere indirizzo>
+#                                       'id_indirizzo' : 1,
+#                                       'anno_scuola' : 5
 #                                    }
 #                               },
 #                               STATUS CODE
@@ -154,11 +200,10 @@ def userLogin():
                 user_data = {
                     'username': result['username'],
                     'email': result['email'],
-                    'nome': result['nome'],
-                    'cognome': result['cognome'],
-                    'id_classe': result['id_classe']
-                    # da aggiungere indirizzo (non ancora salvato nel DB)
+                    'id_indirizzo' : result['id_indirizzo'],
+                    'anno_scuola' : result['anno_scuola']
                 }
+                session["user_email"] = result['email']
                 return jsonify({'message': 'Login effettuato con successo', 'user': user_data}), 200
             else:
                 return jsonify({'error': 'Credenziali errate'}), 401
@@ -238,6 +283,681 @@ def getSchoolList():
     except Error as e:
         return jsonify({'error': str(e)}), 500
 
+
+# === API COMPITI ===
+
+# ENDPOINT /api/tasks
+# metodo: GET
+# Recupera tutti i compiti associati all'utente autenticato.
+# Parametri (opzionali via query string):
+#   - stato_compito: filtra per stato (es. 'In Corso')
+#   - priority: filtra per priorità (es. 'Alta')
+#   - orderBy: campo per ordinamento (es. 'data_consegna')
+#   - orderDir: direzione ordinamento ('ASC' o 'DESC')
+# Ritorno: lista JSON di compiti con proprietà come id_compito, titolo, data_consegna ecc.
+# Esempio:
+# [
+#   {
+#     "id_compito": 1,
+#     "titolo": "Verifica Matematica",
+#     ...
+#   }
+# ]
+@app.route('/api/tasks', methods=['GET'])
+def get_tasks():
+    user_email = get_current_user_email()
+    filters = []
+    params = [user_email]
+    
+    query_base = "SELECT * FROM Compiti WHERE email = %s"
+
+    # Filtraggio (esempio: by stato_compito or priority_compito)
+    allowed_filters = {"stato_compito": "stato_compito", "priority": "priority_compito"}
+    for key, column_name in allowed_filters.items():
+        if key in request.args:
+            filters.append(f"{column_name} = %s")
+            params.append(request.args[key])
+    
+    if filters:
+        query_base += " AND " + " AND ".join(filters)
+
+    # Ordinamento (esempio: orderBy=data_consegna&orderDir=DESC)
+    order_by_column = request.args.get('orderBy')
+    order_dir = request.args.get('orderDir', 'ASC').upper()
+    
+    allowed_order_columns = ['titolo', 'data_consegna', 'stato_compito', 'priority_compito']
+    if order_by_column in allowed_order_columns and order_dir in ['ASC', 'DESC']:
+        query_base += f" ORDER BY {order_by_column} {order_dir}"
+    
+    try:
+        with get_cursor(dictionary=True) as cursor:
+            cursor.execute(query_base, tuple(params))
+            tasks = cursor.fetchall()
+            return jsonify(tasks), 200
+    except Error as e:
+        return jsonify({"error": "Database error", "details": str(e)}), 500
+    except ValueError as ve:
+        return jsonify({"error": str(ve)}), 401
+
+
+# ENDPOINT /api/tasks
+# metodo: POST
+# Aggiunge un nuovo compito per l’utente autenticato.
+# Parametri (JSON):
+#   - titolo, data_consegna, id_materia, stato_compito, priority_compito
+# Ritorno: JSON del compito appena creato + status 201
+# Esempio:
+# {
+#   "id_compito": 10,
+#   "titolo": "Tema Italiano",
+#   ...
+# }
+@app.route('/api/tasks', methods=['POST'])
+def add_task():
+    user_email = get_current_user_email()
+    data = request.get_json()
+
+    if not data:
+        return jsonify({"error": "Invalid JSON payload"}), 400
+
+    required_fields = ['titolo', 'data_consegna', 'id_materia', 'stato_compito', 'priority_compito']
+    if not all(field in data for field in required_fields):
+        return jsonify({"error": f"Missing fields. Required: {', '.join(required_fields)}"}), 400
+
+    query = """
+        INSERT INTO Compiti (titolo, data_consegna, id_materia, email, stato_compito, priority_compito)
+        VALUES (%s, %s, %s, %s, %s, %s)
+    """
+    params = (
+        data['titolo'], data['data_consegna'], data['id_materia'],
+        user_email, data['stato_compito'], data['priority_compito']
+    )
+
+    try:
+        with get_cursor(dictionary=True) as cursor:
+            cursor.execute(query, params)
+            new_task_id = cursor.lastrowid
+            cursor.execute("SELECT * FROM Compiti WHERE id_compito = %s", (new_task_id,))
+            new_task = cursor.fetchone()
+            return jsonify(new_task), 201
+    except Error as e:
+        # Controllo errori specifico (foreign key violata per id_materia)
+        if e.errno == 1452: 
+             return jsonify({"error": "Invalid id_materia or user ID.", "details": str(e)}), 400
+        return jsonify({"error": "Database error", "details": str(e)}), 500
+    except ValueError as ve:
+        return jsonify({"error": str(ve)}), 401
+
+
+# ENDPOINT /api/tasks/<int:task_id>
+# metodo: PUT
+# Aggiorna completamente un compito esistente.
+# Parametri: come nel POST. L'id del compito è nell'URL.
+# Ritorno: JSON aggiornato del compito oppure errore se non trovato.
+@app.route('/api/tasks/<int:task_id>', methods=['PUT'])
+def update_task(task_id):
+    user_email = get_current_user_email()
+    data = request.get_json()
+
+    if not data:
+        return jsonify({"error": "Invalid JSON payload"}), 400
+
+    required_fields = ['titolo', 'data_consegna', 'id_materia', 'stato_compito', 'priority_compito']
+    if not all(field in data for field in required_fields):
+        return jsonify({"error": f"Missing fields for PUT. Required: {', '.join(required_fields)}"}), 400
+    
+    query = """
+        UPDATE Compiti SET
+            titolo = %s,
+            data_consegna = %s,
+            id_materia = %s,
+            stato_compito = %s,
+            priority_compito = %s
+        WHERE id_compito = %s AND email = %s
+    """
+    params = (
+        data['titolo'], data['data_consegna'], data['id_materia'],
+        data['stato_compito'], data['priority_compito'],
+        task_id, user_email
+    )
+
+    try:
+        with get_cursor(dictionary=True) as cursor:
+            cursor.execute(query, params)
+            if cursor.rowcount == 0:
+                return jsonify({"error": "Task not found or user not authorized"}), 404
+            
+            updated_task = fetch_item_by_id(cursor, "Compiti", "id_compito", task_id, user_email)
+            return jsonify(updated_task), 200
+    except Error as e:
+        if e.errno == 1452: # constraint della FK non rispettato
+             return jsonify({"error": "Invalid id_materia.", "details": str(e)}), 400
+        return jsonify({"error": "Database error", "details": str(e)}), 500
+    except ValueError as ve:
+        return jsonify({"error": str(ve)}), 401
+
+
+# ENDPOINT /api/tasks/<int:task_id>
+# metodo: PATCH
+# Aggiorna solo lo stato del compito (campo stato_compito).
+# Parametri (JSON): stato_compito (valori ammessi: 'Da iniziare', 'In Corso', 'Completato')
+# Ritorno: JSON del compito aggiornato oppure errore.
+@app.route('/api/tasks/<int:task_id>', methods=['PATCH'])
+def patch_task_status(task_id):
+    user_email = get_current_user_email()
+    data = request.get_json()
+
+    if not data or 'stato_compito' not in data:
+        return jsonify({"error": "Invalid JSON payload or missing 'stato_compito'"}), 400
+
+    allowed_statuses = ['Da iniziare', 'In Corso', 'Completato']
+    if data['stato_compito'] not in allowed_statuses:
+        return jsonify({"error": f"Invalid stato_compito. Allowed values: {', '.join(allowed_statuses)}"}), 400
+
+    query = """
+        UPDATE Compiti SET stato_compito = %s
+        WHERE id_compito = %s AND email = %s
+    """
+    params = (data['stato_compito'], task_id, user_email)
+
+    try:
+        with get_cursor(dictionary=True) as cursor:
+            cursor.execute(query, params)
+            if cursor.rowcount == 0:
+                return jsonify({"error": "Task not found or user not authorized"}), 404
+            
+            updated_task = fetch_item_by_id(cursor, "Compiti", "id_compito", task_id, user_email)
+            return jsonify(updated_task), 200
+    except Error as e:
+        return jsonify({"error": "Database error", "details": str(e)}), 500
+    except ValueError as ve:
+        return jsonify({"error": str(ve)}), 401
+
+
+# ENDPOINT /api/tasks/<int:task_id>
+# metodo: DELETE
+# Elimina un compito specifico dell’utente.
+# Parametri: ID nel path
+# Ritorno: messaggio di conferma o errore.
+@app.route('/api/tasks/<int:task_id>', methods=['DELETE'])
+def delete_task(task_id):
+    user_email = get_current_user_email()
+    query = "DELETE FROM Compiti WHERE id_compito = %s AND email = %s"
+    
+    try:
+        with get_cursor() as cursor:
+            cursor.execute(query, (task_id, user_email))
+            if cursor.rowcount == 0:
+                return jsonify({"error": "Task not found or user not authorized"}), 404
+            return jsonify({"message": "Task deleted successfully"}), 200
+    except Error as e:
+        return jsonify({"error": "Database error", "details": str(e)}), 500
+    except ValueError as ve:
+        return jsonify({"error": str(ve)}), 401
+
+
+# === API LEZIONI ===
+
+# ENDPOINT /api/lessons
+# metodo: GET
+# Ritorna tutte le lezioni associate all’utente autenticato, ordinate per data_inizio_lezione.
+# Parametri: nessuno
+# Ritorno: lista JSON delle lezioni.
+@app.route('/api/lessons', methods=['GET'])
+def get_lessons():
+    user_email = get_current_user_email()
+    query = "SELECT * FROM Lezioni WHERE email = %s ORDER BY data_inizio_lezione"
+    try:
+        with get_cursor(dictionary=True) as cursor:
+            cursor.execute(query, (user_email,))
+            lessons = cursor.fetchall()
+            return jsonify(lessons), 200
+    except Error as e:
+        return jsonify({"error": "Database error", "details": str(e)}), 500
+    except ValueError as ve:
+        return jsonify({"error": str(ve)}), 401
+
+
+# ENDPOINT /api/lessons
+# metodo: POST
+# Aggiunge una nuova lezione.
+# Parametri (JSON): data_inizio_lezione, data_fine_lezione, id_materia
+# Ritorno: JSON della lezione creata.
+@app.route('/api/lessons', methods=['POST'])
+def add_lesson():
+    user_email = get_current_user_email()
+    data = request.get_json()
+
+    if not data:
+        return jsonify({"error": "Invalid JSON payload"}), 400
+
+    required_fields = ['data_inizio_lezione', 'data_fine_lezione', 'id_materia']
+    if not all(field in data for field in required_fields):
+        return jsonify({"error": f"Missing fields. Required: {', '.join(required_fields)}"}), 400
+
+    query = """
+        INSERT INTO Lezioni (email, data_inizio_lezione, data_fine_lezione, id_materia)
+        VALUES (%s, %s, %s, %s)
+    """
+    params = (
+        user_email, data['data_inizio_lezione'], data['data_fine_lezione'], data['id_materia']
+    )
+
+    try:
+        with get_cursor(dictionary=True) as cursor:
+            cursor.execute(query, params)
+            new_lesson_id = cursor.lastrowid
+            new_lesson = fetch_item_by_id(cursor, "Lezioni", "id_lezione", new_lesson_id, user_email)
+            return jsonify(new_lesson), 201
+    except Error as e:
+        if e.errno == 1452: # constraint della FK non rispettato
+             return jsonify({"error": "Invalid id_materia or user ID.", "details": str(e)}), 400
+        if e.errno == 3819: # CHECK constraint non rispettato (l_check_duration)
+            return jsonify({"error": "Lesson duration constraint violated.", "details": str(e)}), 400
+        return jsonify({"error": "Database error", "details": str(e)}), 500
+    except ValueError as ve:
+        return jsonify({"error": str(ve)}), 401
+
+
+# ENDPOINT /api/lessons/<int:lesson_id>
+# metodo: PUT
+# Aggiorna una lezione esistente.
+# Parametri: stessi del POST.
+# Ritorno: JSON della lezione aggiornata o errore.
+@app.route('/api/lessons/<int:lesson_id>', methods=['PUT'])
+def update_lesson(lesson_id):
+    user_email = get_current_user_email()
+    data = request.get_json()
+
+    if not data:
+        return jsonify({"error": "Invalid JSON payload"}), 400
+
+    required_fields = ['data_inizio_lezione', 'data_fine_lezione', 'id_materia']
+    if not all(field in data for field in required_fields):
+        return jsonify({"error": f"Missing fields for PUT. Required: {', '.join(required_fields)}"}), 400
+
+    query = """
+        UPDATE Lezioni SET
+            data_inizio_lezione = %s,
+            data_fine_lezione = %s,
+            id_materia = %s
+        WHERE id_lezione = %s AND email = %s
+    """
+    params = (
+        data['data_inizio_lezione'], data['data_fine_lezione'], data['id_materia'],
+        lesson_id, user_email
+    )
+
+    try:
+        with get_cursor(dictionary=True) as cursor:
+            cursor.execute(query, params)
+            if cursor.rowcount == 0:
+                return jsonify({"error": "Lesson not found or user not authorized"}), 404
+            
+            updated_lesson = fetch_item_by_id(cursor, "Lezioni", "id_lezione", lesson_id, user_email)
+            return jsonify(updated_lesson), 200
+    except Error as e:
+        if e.errno == 1452: # constraint della FK non rispettato
+             return jsonify({"error": "Invalid id_materia.", "details": str(e)}), 400
+        if e.errno == 3819: # CHECK constraint non rispettato (l_check_duration)
+            return jsonify({"error": "Lesson duration constraint violated.", "details": str(e)}), 400
+        return jsonify({"error": "Database error", "details": str(e)}), 500
+    except ValueError as ve:
+        return jsonify({"error": str(ve)}), 401
+
+
+# ENDPOINT /api/lessons/<int:lesson_id>
+# metodo: DELETE
+# Elimina una lezione.
+# Parametri: ID nel path.
+# Ritorno: messaggio conferma o errore.
+@app.route('/api/lessons/<int:lesson_id>', methods=['DELETE'])
+def delete_lesson(lesson_id):
+    user_email = get_current_user_email()
+    query = "DELETE FROM Lezioni WHERE id_lezione = %s AND email = %s"
+    
+    try:
+        with get_cursor() as cursor:
+            cursor.execute(query, (lesson_id, user_email))
+            if cursor.rowcount == 0:
+                return jsonify({"error": "Lesson not found or user not authorized"}), 404
+            return jsonify({"message": "Lesson deleted successfully"}), 200
+    except Error as e:
+        return jsonify({"error": "Database error", "details": str(e)}), 500
+    except ValueError as ve:
+        return jsonify({"error": str(ve)}), 401
+
+
+# === API EVENTI PERSONALI ===
+
+# ENDPOINT /api/events
+# metodo: GET
+# Restituisce tutte le attività personali dell’utente.
+# Parametri: nessuno
+# Ritorno: lista JSON delle attività.
+@app.route('/api/events', methods=['GET'])
+def get_events():
+    user_email = get_current_user_email()
+    query = "SELECT * FROM Attivita_personali WHERE email = %s ORDER BY data_inizio"
+    try:
+        with get_cursor(dictionary=True) as cursor:
+            cursor.execute(query, (user_email,))
+            events = cursor.fetchall()
+            return jsonify(events), 200
+    except Error as e:
+        return jsonify({"error": "Database error", "details": str(e)}), 500
+    except ValueError as ve:
+        return jsonify({"error": str(ve)}), 401
+
+
+# ENDPOINT /api/events
+# metodo: POST
+# Crea una nuova attività personale.
+# Parametri (JSON): titolo, data_inizio, data_fine, descrizione (opzionale), tipologia_attivita (opzionale)
+# Ritorno: attività creata in formato JSON.
+@app.route('/api/events', methods=['POST'])
+def add_event():
+    user_email = get_current_user_email()
+    data = request.get_json()
+
+    if not data:
+        return jsonify({"error": "Invalid JSON payload"}), 400
+
+    required_fields = ['titolo', 'data_inizio', 'data_fine']
+    if not all(field in data for field in required_fields):
+        return jsonify({"error": f"Missing fields. Required: {', '.join(required_fields)}"}), 400
+
+    # Campi opzionali
+    descrizione = data.get('descrizione')
+    tipologia_attivita = data.get('tipologia_attivita') 
+
+    query = """
+        INSERT INTO Attivita_personali (email, titolo, data_inizio, data_fine, descrizione, tipologia_attivita)
+        VALUES (%s, %s, %s, %s, %s, %s)
+    """
+    params = (
+        user_email, data['titolo'], data['data_inizio'], data['data_fine'],
+        descrizione, tipologia_attivita
+    )
+
+    try:
+        with get_cursor(dictionary=True) as cursor:
+            cursor.execute(query, params)
+            new_event_id = cursor.lastrowid
+            new_event = fetch_item_by_id(cursor, "Attivita_personali", "id_attivita_personale", new_event_id, user_email)
+            return jsonify(new_event), 201
+    except Error as e:
+        if e.errno == 1452: # constraint della FK non rispettato (es: tipologia_attivita non valido)
+             return jsonify({"error": "Invalid tipologia_attivita or user ID.", "details": str(e)}), 400
+        if e.errno == 3819: # CHECK constraint non rispettato (a_check_duration)
+            return jsonify({"error": "Event duration constraint violated (end date must be after start date).", "details": str(e)}), 400
+        return jsonify({"error": "Database error", "details": str(e)}), 500
+    except ValueError as ve:
+        return jsonify({"error": str(ve)}), 401
+
+
+# ENDPOINT /api/events/<int:event_id>
+# metodo: PUT
+# Aggiorna un'attività personale esistente.
+# Parametri: stessi del POST.
+# Ritorno: JSON dell’attività aggiornata o errore.
+@app.route('/api/events/<int:event_id>', methods=['PUT'])
+def update_event(event_id):
+    user_email = get_current_user_email()
+    data = request.get_json()
+
+    if not data:
+        return jsonify({"error": "Invalid JSON payload"}), 400
+
+    required_fields = ['titolo', 'data_inizio', 'data_fine'] 
+    if not all(field in data for field in required_fields):
+        return jsonify({"error": f"Missing fields for PUT. Required: {', '.join(required_fields)}"}), 400
+
+    descrizione = data.get('descrizione')
+    tipologia_attivita = data.get('tipologia_attivita')
+
+    query = """
+        UPDATE Attivita_personali SET
+            titolo = %s,
+            data_inizio = %s,
+            data_fine = %s,
+            descrizione = %s,
+            tipologia_attivita = %s
+        WHERE id_attivita_personale = %s AND email = %s
+    """
+    params = (
+        data['titolo'], data['data_inizio'], data['data_fine'],
+        descrizione, tipologia_attivita,
+        event_id, user_email
+    )
+
+    try:
+        with get_cursor(dictionary=True) as cursor:
+            cursor.execute(query, params)
+            if cursor.rowcount == 0:
+                return jsonify({"error": "Event not found or user not authorized"}), 404
+            
+            updated_event = fetch_item_by_id(cursor, "Attivita_personali", "id_attivita_personale", event_id, user_email)
+            return jsonify(updated_event), 200
+    except Error as e:
+        if e.errno == 1452: # constraint della FK non rispettato
+             return jsonify({"error": "Invalid tipologia_attivita.", "details": str(e)}), 400
+        if e.errno == 3819: # CHECK constraint non rispettato (a_check_duration)
+            return jsonify({"error": "Event duration constraint violated (end date must be after start date).", "details": str(e)}), 400
+        return jsonify({"error": "Database error", "details": str(e)}), 500
+    except ValueError as ve:
+        return jsonify({"error": str(ve)}), 401
+
+
+# ENDPOINT /api/events/<int:event_id>
+# metodo: DELETE
+# Elimina un'attività personale.
+# Parametri: ID nel path.
+# Ritorno: messaggio conferma o errore.
+@app.route('/api/events/<int:event_id>', methods=['DELETE'])
+def delete_event(event_id):
+    user_email = get_current_user_email()
+    query = "DELETE FROM Attivita_personali WHERE id_attivita_personale = %s AND email = %s"
+    
+    try:
+        with get_cursor() as cursor:
+            cursor.execute(query, (event_id, user_email))
+            if cursor.rowcount == 0:
+                return jsonify({"error": "Event not found or user not authorized"}), 404
+            return jsonify({"message": "Event deleted successfully"}), 200
+    except Error as e:
+        return jsonify({"error": "Database error", "details": str(e)}), 500
+    except ValueError as ve:
+        return jsonify({"error": str(ve)}), 401
+
+
+# === API TIPOLOGIE ATTIVITA' PERSONALI ===
+
+# ENDPOINT /api/personal_activity_types
+# metodo: GET
+# Restituisce le tipologie personalizzate di attività dell'utente.
+# Parametri: nessuno
+# Ritorno: lista JSON con nome_tipologia e colore_tipologia.
+@app.route('/api/personal_activity_types', methods=['GET'])
+def get_personal_activity_types():
+    try:
+        user_email = get_current_user_email()
+        if not user_email:
+            return jsonify({"error": "Authentication required"}), 401
+
+        query = "SELECT * FROM Tipologie_personali WHERE email = %s ORDER BY nome_tipologia"
+        with get_cursor(dictionary=True) as cursor:
+            cursor.execute(query, (user_email,))
+            types = cursor.fetchall()
+            return jsonify(types), 200
+    except ValueError as ve:
+        return jsonify({"error": str(ve)}), 401
+    except Error as e:
+        app.logger.error(f"Database error fetching personal activity types: {e}")
+        return jsonify({"error": "Database error", "details": str(e)}), 500
+
+
+# ENDPOINT /api/personal_activity_types
+# metodo: POST
+# Aggiunge una nuova tipologia di attività personale.
+# Parametri (JSON): nome_tipologia, colore_tipologia (deve essere tra quelli consentiti)
+# Ritorno: JSON della tipologia creata.
+@app.route('/api/personal_activity_types', methods=['POST'])
+def add_personal_activity_type():
+    try:
+        user_email = get_current_user_email()
+        if not user_email:
+            return jsonify({"error": "Authentication required"}), 401
+
+        data = request.get_json()
+        if not data:
+            return jsonify({"error": "Invalid JSON payload"}), 400
+
+        required_fields = ['nome_tipologia', 'colore_tipologia']
+        if not all(field in data for field in required_fields):
+            return jsonify({"error": f"Missing fields. Required: {', '.join(required_fields)}"}), 400
+
+        nome_tipologia = data['nome_tipologia'].strip()
+        colore_tipologia = data['colore_tipologia']
+
+        if not nome_tipologia:
+            return jsonify({"error": "nome_tipologia cannot be empty"}), 400
+        
+        if colore_tipologia not in ALLOWED_COLORS_TIPOLOGIE:
+            return jsonify({"error": f"Invalid colore_tipologia. Allowed values: {', '.join(ALLOWED_COLORS_TIPOLOGIE)}"}), 400
+
+        with get_cursor(dictionary=True) as cursor:
+            cursor.execute("SELECT id_tipologia FROM Tipologie_personali WHERE nome_tipologia = %s", (nome_tipologia,))
+            if cursor.fetchone():
+                return jsonify({"error": f"A personal activity type with name '{nome_tipologia}' already exists globally."}), 409
+
+            insert_query = """
+                INSERT INTO Tipologie_personali (email, nome_tipologia, colore_tipologia)
+                VALUES (%s, %s, %s)
+            """
+            params = (user_email, nome_tipologia, colore_tipologia)
+            
+            cursor.execute(insert_query, params)
+            new_type_id = cursor.lastrowid
+            
+            new_type = fetch_item_by_id(cursor, "Tipologie_personali", "id_tipologia", new_type_id, user_email)
+            if not new_type: 
+                app.logger.error(f"Failed to fetch newly created personal activity type ID: {new_type_id}")
+                return jsonify({"error": "Failed to retrieve created type"}), 500
+                
+            return jsonify(new_type), 201
+            
+    except ValueError as ve:
+        return jsonify({"error": str(ve)}), 401
+    except Error as e:
+        if e.errno == 1062:
+            return jsonify({"error": f"A personal activity type with name '{data.get('nome_tipologia')}' already exists (DB constraint).", "details": str(e)}), 409
+        elif e.errno == 1452:
+            return jsonify({"error": "Invalid user reference.", "details": str(e)}), 400
+        app.logger.error(f"Database error adding personal activity type: {e}")
+        return jsonify({"error": "Database error", "details": str(e)}), 500
+
+
+# ENDPOINT /api/personal_activity_types/<int:type_id>
+# metodo: PUT
+# Aggiorna una tipologia di attività esistente.
+# Parametri (JSON): nome_tipologia, colore_tipologia
+# Ritorno: tipologia aggiornata in formato JSON.
+@app.route('/api/personal_activity_types/<int:type_id>', methods=['PUT'])
+def update_personal_activity_type(type_id):
+    try:
+        user_email = get_current_user_email()
+        if not user_email:
+            return jsonify({"error": "Authentication required"}), 401
+
+        data = request.get_json()
+        if not data:
+            return jsonify({"error": "Invalid JSON payload"}), 400
+
+        required_fields = ['nome_tipologia', 'colore_tipologia']
+        if not all(field in data for field in required_fields):
+            return jsonify({"error": f"Missing fields for PUT. Required: {', '.join(required_fields)}"}), 400
+
+        nome_tipologia = data['nome_tipologia'].strip()
+        colore_tipologia = data['colore_tipologia']
+
+        if not nome_tipologia:
+            return jsonify({"error": "nome_tipologia cannot be empty"}), 400
+
+        if colore_tipologia not in ALLOWED_COLORS_TIPOLOGIE:
+            return jsonify({"error": f"Invalid colore_tipologia. Allowed values: {', '.join(ALLOWED_COLORS_TIPOLOGIE)}"}), 400
+
+        with get_cursor(dictionary=True) as cursor:
+            existing_type = fetch_item_by_id(cursor, "Tipologie_personali", "id_tipologia", type_id, user_email)
+            if not existing_type:
+                return jsonify({"error": "Personal activity type not found or user not authorized"}), 404
+
+            if existing_type['nome_tipologia'] != nome_tipologia:
+                cursor.execute(
+                    "SELECT id_tipologia FROM Tipologie_personali WHERE nome_tipologia = %s AND id_tipologia != %s",
+                    (nome_tipologia, type_id)
+                )
+                if cursor.fetchone():
+                    return jsonify({"error": f"Another personal activity type with name '{nome_tipologia}' already exists globally."}), 409
+            
+            update_query = """
+                UPDATE Tipologie_personali SET
+                    nome_tipologia = %s,
+                    colore_tipologia = %s
+                WHERE id_tipologia = %s AND email = %s 
+            """
+            params = (nome_tipologia, colore_tipologia, type_id, user_email)
+            
+            cursor.execute(update_query, params)
+            
+            if cursor.rowcount == 0 and (existing_type['nome_tipologia'] != nome_tipologia or existing_type['colore_tipologia'] != colore_tipologia) :
+                 app.logger.warning(f"Update for personal_activity_type {type_id} by user {user_email} resulted in 0 rowcount despite expected changes.")
+                 updated_type_check = fetch_item_by_id(cursor, "Tipologie_personali", "id_tipologia", type_id, user_email)
+                 if not updated_type_check:
+                     return jsonify({"error": "Personal activity type may have been deleted concurrently"}), 404
+
+            updated_type = fetch_item_by_id(cursor, "Tipologie_personali", "id_tipologia", type_id, user_email)
+            return jsonify(updated_type), 200
+            
+    except ValueError as ve:
+        return jsonify({"error": str(ve)}), 401
+    except Error as e:
+        if e.errno == 1062:
+            return jsonify({"error": f"Another personal activity type with name '{data.get('nome_tipologia')}' already exists (DB constraint).", "details": str(e)}), 409
+        app.logger.error(f"Database error updating personal activity type {type_id}: {e}")
+        return jsonify({"error": "Database error", "details": str(e)}), 500
+
+
+# ENDPOINT /api/personal_activity_types/<int:type_id>
+# metodo: DELETE
+# Elimina una tipologia personale.
+# Parametri: ID nel path.
+# Ritorno: messaggio di conferma.
+@app.route('/api/personal_activity_types/<int:type_id>', methods=['DELETE'])
+def delete_personal_activity_type(type_id):
+    try:
+        user_email = get_current_user_email()
+        if not user_email:
+            return jsonify({"error": "Authentication required"}), 401
+        
+        with get_cursor(dictionary=False) as cursor:
+            
+            delete_query = "DELETE FROM Tipologie_personali WHERE id_tipologia = %s AND email = %s"
+            cursor.execute(delete_query, (type_id, user_email))
+
+            if cursor.rowcount == 0:
+                return jsonify({"error": "Personal activity type not found or user not authorized"}), 404
+            
+            return jsonify({"message": "Personal activity type deleted successfully"}), 200
+            
+    except ValueError as ve:
+        return jsonify({"error": str(ve)}), 401
+    except Error as e:
+        app.logger.error(f"Database error deleting personal activity type {type_id}: {e}")
+        return jsonify({"error": "Database error", "details": str(e)}), 500
+
+
+# -----------------------------------------------------------------------------------------------
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -1,4 +1,121 @@
-.help-page{
+.help-page {
     width: 100%;
-    height: 100vh;
+    min-height: 100vh;
+    background: linear-gradient(120deg, #e0f3fa 0%, #bcdbff 100%);
+    color: #0b1d87;
+    display: flex;
+    flex-direction: column;
+}
+
+.help-content {
+    max-width: 800px;
+    margin: 40px auto 20px auto;
+    background: #f3f8fc;
+    border-radius: 30px;
+    box-shadow: 0 4px 24px rgba(11, 29, 135, 0.08);
+    padding: 40px 30px;
+        font-family: "Montserrat", sans-serif;
+}
+
+.help-title {
+    text-align: center;
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 30px;
+    color: #0b1d87;
+}
+
+.help-section {
+    margin-bottom: 32px;
+}
+
+.help-section h2 {
+    color: #0b1d87;
+    font-size: 1.5rem;
+    margin-bottom: 12px;
+    font-weight: 600;
+}
+
+.help-section p, .help-section ol {
+    color: #222;
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+}
+
+.faq {
+    margin-top: 10px;
+}
+
+.faq-item {
+    margin-bottom: 18px;
+    background: #e0f3fa;
+    border-radius: 18px;
+    padding: 16px 18px;
+    box-shadow: 0 2px 8px rgba(11, 29, 135, 0.06);
+}
+
+.mail-5f{
+    color: #0b1d87;
+}
+.mail-5f:hover{
+    color: #0b1d87;
+    text-decoration:solid;
+    cursor: pointer;
+}
+
+.faq-item h3 {
+    font-size: 1.1rem;
+    color: #0b1d87;
+    margin-bottom: 6px;
+}
+
+.faq-item p {
+    color: #333;
+    margin: 0;
+}
+
+.contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    background: #f0f5fa;
+    border-radius: 18px;
+    padding: 24px 18px;
+    box-shadow: 0 2px 8px rgba(11, 29, 135, 0.06);
+    margin-top: 10px;
+}
+
+.contact-form label {
+    font-weight: 500;
+    color: #0b1d87;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.contact-form input,
+.contact-form textarea {
+    border: 1px solid #bcdcff;
+    border-radius: 8px;
+    padding: 8px;
+    font-size: 1rem;
+    font-family: "Montserrat", sans-serif;
+    background: #fff;
+    color: #222;
+    resize: vertical;
+}
+
+.contact-form button {
+    background: linear-gradient(90deg, #0b1d87 60%, #042345 100%);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 0;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.contact-form button:hover {
+    background: linear-gradient(90deg, #042345 20%,  #0b1d87 100%);
 }

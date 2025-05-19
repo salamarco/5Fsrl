@@ -8,6 +8,7 @@
 }
 
 .access-module{
+    overflow: hidden;
     position: absolute;
     display: flex;
     align-items: center;
@@ -37,6 +38,7 @@
 
 
 .data-form button{
+    margin-top: 15px;
     background-color: #347bf5;
     color: white;
     border: none;
@@ -70,6 +72,8 @@
     width: 70px;
     height: 40px;
 }
+
+
 .buttonToForm:hover{
     background-color: rgb(0, 0, 0);
     color: #fff;
