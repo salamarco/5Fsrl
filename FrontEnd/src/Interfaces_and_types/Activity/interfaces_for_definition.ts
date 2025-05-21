@@ -20,8 +20,15 @@ export interface boxFieldDefinition {
 }
 
 export interface activityFieldDefinitions {
-  Compiti?: boxFieldDefinition[];
-  Verifiche?: boxFieldDefinition[];
-  Lezioni?: boxFieldDefinition[];
-  Personal?: boxFieldDefinition[];
+  Compiti?: typeActivityForModeDefinition
+  Verifiche?: typeActivityForModeDefinition
+  Lezioni?: typeActivityForModeDefinition
+  Personal?:typeActivityForModeDefinition
+}
+
+export interface typeActivityForModeDefinition {
+  view: Array<boxFieldDefinition>,
+  add: Array<boxFieldDefinition>,
+  edit: Array<boxFieldDefinition>,
+  delete: Array<boxFieldDefinition>
 }

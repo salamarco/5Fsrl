@@ -1,5 +1,5 @@
 import { propsCompiti,propsLezioni,propsVerifica,propsPersonal } from '../../../Interfaces_and_types/Activity/interfaces_for_activity';
-import { activityFieldDefinitions } from '../../../Interfaces_and_types/Activity/interfaces_for_definition';
+import {activityFieldDefinitions } from '../../../Interfaces_and_types/Activity/interfaces_for_definition';
 import { HiDotsHorizontal } from "react-icons/hi";
 import React from 'react';
 import {useState } from 'react';
@@ -24,7 +24,7 @@ export const Box_activity: React.FC<propsBoxActivity> = ({data,argumentActivity}
   const dataFinal: { [key: string]: any } | undefined = dataParse?.data ? dataParse.data : undefined
   
   return (
-    (dataFinal && fieldDefinitions ? (
+    (dataFinal && fieldDefinitions && argumentActivity ? (
       <div id='box/activity'>
         <div button-box>
           {(visualizeOption) ? (
@@ -49,7 +49,7 @@ export const Box_activity: React.FC<propsBoxActivity> = ({data,argumentActivity}
           )}
         </div>
         <div id='box-data'onClick={() => setState({ modeToOpenBox: 'view', data: data, argumentActivity: argumentActivity })}>
-          {fieldDefinitions.map((fieldDef, index) => {
+          {fieldDefinitions.view.map((fieldDef, index) => {
             const key = (fieldDef.key && fieldDef.key)
             const value = (key ? dataFinal[key] :  '');
             const displayValue = Array.isArray(value) ? value.join(', ') : String(value);
@@ -58,7 +58,7 @@ export const Box_activity: React.FC<propsBoxActivity> = ({data,argumentActivity}
               <div key={index}>
                 <Field
                   element={fieldDef.data_tag}
-                  elementIndex={index} // L'indice è usato come chiave dal componente Field
+                  elementIndex={index}
                   children_p={(fieldDef.data_tag.tag === 'p' ? displayValue : undefined)}
                 />
               </div>
